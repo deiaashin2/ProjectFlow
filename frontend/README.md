@@ -4,19 +4,19 @@ This template provides a minimal setup to get React working in Vite with HMR and
 
 ### Getting Started Locally
 
-Change into the frontend directory
+1. Change into the frontend directory
 
 ```
 cd frontend
 ```
 
-Install dependencies
+2. Install dependencies
 
 ```
 npm install
 ```
 
-Start the development
+3. Start the development server
 
 ```
 npm run dev

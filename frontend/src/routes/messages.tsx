@@ -1,11 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MessageSidebar } from "@/components/messages-sidebar";
 import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { messagesData, usersData } from "@/lib/mock-data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
 import { Ellipsis, Pencil, Smile, Forward } from "lucide-react";
@@ -15,7 +11,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { messagesData, usersData } from "@/lib/mock-data";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { Input } from "@/components/ui/input";
 
 export const Route = createFileRoute("/messages")({
   component: RouteComponent,
@@ -31,18 +32,18 @@ function RouteComponent() {
       }
     >
       <MessageSidebar />
-      <SidebarInset className="flex flex-col h-screen">
+      <SidebarInset>
         {/* Header */}
         <header className="sticky top-0 flex shrink-0 items-center gap-2 border-b bg-background p-4">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-2" />
-          <span className="text-xl"># Project Flow</span>
+          <span className="text-xl grow"># Project Flow</span>
         </header>
 
         {/* Messages Layout */}
-        <div className="flex flex-row flex-grow h-0">
+        <div className="flex flex-row flex-grow h-0 ">
           <div className="flex flex-col w-full h-full gap-4 ">
-            <div className="flex flex-col-reverse flex-grow overflow-y-auto scrollbar-thin">
+            <div className="flex flex-col-reverse gap-4 flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent">
               {messagesData.map((message) => (
                 <Message
                   key={message.username}
@@ -53,6 +54,7 @@ function RouteComponent() {
                 />
               ))}
             </div>
+
             <div className="px-4 pb-6">
               <Textarea
                 placeholder="Type your message here."
@@ -62,7 +64,7 @@ function RouteComponent() {
           </div>
 
           {/* User Sidebar */}
-          <div className="hidden md:flex min-w-56 lg:min-w-64 p-2 border-l ">
+          <div className="hidden md:flex min-w-56 lg:min-w-64 p-2 border-l bg-sidebar-accent ">
             <UsersList />
           </div>
         </div>
@@ -137,7 +139,7 @@ function UsersList() {
   return (
     <div className="flex flex-col gap-2 w-full">
       <div className="flex flex-col">
-        <h3 className="font-semibold text-muted-foreground text-sm">
+        <h3 className="font-semibold text-muted-foreground text-base">
           Online - 100
         </h3>
         {usersData
@@ -147,17 +149,17 @@ function UsersList() {
               className="flex items-center gap-2 hover:bg-gray-200 p-1 rounded-sm"
               key={user.username}
             >
-              <Avatar className="size-7 text-xs">
+              <Avatar className="size-8 text-xs">
                 <AvatarImage src={user.avatar} />
                 <AvatarFallback>{user.avatar}</AvatarFallback>
               </Avatar>
-              <span className="text-sm">{user.username}</span>
+              <span className="text-sm font-medium">{user.username}</span>
             </div>
           ))}
       </div>
       <Separator />
       <div className="flex flex-col">
-        <h3 className="font-semibold text-muted-foreground text-sm">
+        <h3 className="font-semibold text-muted-foreground text-base">
           Offline - 98
         </h3>
         {usersData
@@ -167,11 +169,11 @@ function UsersList() {
               className="flex items-center gap-2 hover:bg-gray-200 p-1 rounded-sm"
               key={user.username}
             >
-              <Avatar className="size-7 text-xs">
+              <Avatar className="size-8 text-xs">
                 <AvatarImage src={user.avatar} />
                 <AvatarFallback>{user.avatar}</AvatarFallback>
               </Avatar>
-              <span className="text-sm">{user.username}</span>
+              <span className="text-sm font-medium">{user.username}</span>
             </div>
           ))}
       </div>

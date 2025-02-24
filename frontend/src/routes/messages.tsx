@@ -1,20 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { MessageSidebar } from "../components/messages-sidebar";
-import { Separator } from "../components/ui/separator";
+import { MessageSidebar } from "@/components/messages-sidebar";
+import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "../components/ui/sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
-import { Textarea } from "../components/ui/textarea";
+} from "@/components/ui/sidebar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Textarea } from "@/components/ui/textarea";
 import { Ellipsis, Pencil, Smile, Forward } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "../components/ui/tooltip";
+} from "@/components/ui/tooltip";
 
 export const Route = createFileRoute("/messages")({
   component: RouteComponent,

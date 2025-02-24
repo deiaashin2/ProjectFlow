@@ -1,5 +1,14 @@
 import * as React from "react";
-import { Bird, Command, Rabbit, Snail, Turtle, Squirrel } from "lucide-react";
+import {
+  Bird,
+  Command,
+  Rabbit,
+  Snail,
+  Turtle,
+  Squirrel,
+  ChevronDown,
+  Hash,
+} from "lucide-react";
 import { NavUser } from "./nav-user";
 import {
   Sidebar,
@@ -7,18 +16,30 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "./ui/sidebar";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "./ui/collapsible";
 
 const user = {
   name: "shadcn",
   email: "m@example.com",
   avatar: "/avatars/shadcn.jpg",
 };
+
+const channels = [
+  { name: "Information", subChannels: ["welcomes", "announcements"] },
+  { name: "Text Channels", subChannels: ["general", "notes", "help"] },
+  { name: "Voice Channels", subChannels: ["Study Room"] },
+];
 
 const navMain = [
   {
@@ -78,8 +99,10 @@ export function MessageSidebar({
                     <Command className="size-4" />
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">Acme Inc</span>
-                    <span className="truncate text-xs">Enterprise</span>
+                    <span className="truncate font-medium">Project Flow</span>
+                    <span className="truncate text-xs">
+                      Group Collaboration Tool
+                    </span>
                   </div>
                 </a>
               </SidebarMenuButton>
@@ -122,11 +145,49 @@ export function MessageSidebar({
       </Sidebar>
 
       <Sidebar collapsible="none" className="hidden flex-1 md:flex">
-        <SidebarHeader className="gap-3.5 border-b p-4"></SidebarHeader>
+        <SidebarHeader className="gap-3.5 border-b p-4">
+          <h2 className="font-bold text-lg">Channels</h2>
+        </SidebarHeader>
         <SidebarContent>
-          <SidebarGroup className="px-0">
-            <SidebarGroupContent></SidebarGroupContent>
-          </SidebarGroup>
+          {channels.map((channel) => (
+            <Collapsible
+              defaultOpen
+              className="group/collapsible"
+              key={channel.name}
+              title={channel.name}
+            >
+              <SidebarGroup>
+                <SidebarGroupLabel
+                  className="group/label  text-sm text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  asChild
+                >
+                  <CollapsibleTrigger>
+                    {channel.name}
+                    <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                  </CollapsibleTrigger>
+                </SidebarGroupLabel>
+                <CollapsibleContent>
+                  <SidebarGroupContent>
+                    <SidebarMenu>
+                      {channel.subChannels.map((subChannel) => (
+                        <SidebarMenuItem key={subChannel}>
+                          <SidebarMenuButton
+                            className="cursor-pointer ml-2"
+                            asChild
+                          >
+                            <span className="font-medium">
+                              {" "}
+                              <Hash /> {subChannel}
+                            </span>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      ))}
+                    </SidebarMenu>
+                  </SidebarGroupContent>
+                </CollapsibleContent>
+              </SidebarGroup>
+            </Collapsible>
+          ))}
         </SidebarContent>
       </Sidebar>
     </Sidebar>

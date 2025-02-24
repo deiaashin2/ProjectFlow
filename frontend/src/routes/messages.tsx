@@ -16,7 +16,7 @@ function RouteComponent() {
     <SidebarProvider
       style={
         {
-          "--sidebar-width": "350px",
+          "--sidebar-width": "325px",
         } as React.CSSProperties
       }
     >

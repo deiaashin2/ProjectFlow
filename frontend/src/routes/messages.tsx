@@ -15,6 +15,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { messagesData, usersData } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/messages")({
   component: RouteComponent,
@@ -30,15 +31,28 @@ function RouteComponent() {
       }
     >
       <MessageSidebar />
-      <SidebarInset>
+      <SidebarInset className="flex flex-col h-screen">
+        {/* Header */}
         <header className="sticky top-0 flex shrink-0 items-center gap-2 border-b bg-background p-4">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-2" />
           <span className="text-xl"># Project Flow</span>
         </header>
-        <div className="flex flex-row h-full">
-          <div className="flex flex-col w-full  gap-4 h-full justify-end border-r border-t">
-            <MessageList />
+
+        {/* Messages Layout */}
+        <div className="flex flex-row flex-grow h-0">
+          <div className="flex flex-col w-full h-full gap-4 ">
+            <div className="flex flex-col-reverse flex-grow overflow-y-auto scrollbar-thin">
+              {messagesData.map((message) => (
+                <Message
+                  key={message.username}
+                  username={message.username}
+                  avatar={message.avatar}
+                  timestamp={message.timestamp}
+                  content={message.content}
+                />
+              ))}
+            </div>
             <div className="px-4 pb-6">
               <Textarea
                 placeholder="Type your message here."
@@ -47,49 +61,13 @@ function RouteComponent() {
             </div>
           </div>
 
-          <div className="hidden md:flex min-w-56 lg:min-w-64 p-2 border-l border-t">
+          {/* User Sidebar */}
+          <div className="hidden md:flex min-w-56 lg:min-w-64 p-2 border-l ">
             <UsersList />
           </div>
         </div>
       </SidebarInset>
     </SidebarProvider>
-  );
-}
-
-function MessageList() {
-  const messages = [
-    {
-      username: "HH",
-      avatar: "",
-      timestamp: "2/1/3000 3:15 AM",
-      content: "First Message",
-    },
-    {
-      username: "Some",
-      avatar: "",
-      timestamp: "1/1555 3:15 AM",
-      content: "Another message",
-    },
-    {
-      username: "Some",
-      avatar: "",
-      timestamp: "Today at 6:15 PM",
-      content:
-        "Very Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long Message Very Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long Message Very Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long MessageVery Long Message",
-    },
-  ];
-  return (
-    <div className="flex flex-col  ">
-      {messages.map((message) => (
-        <Message
-          key={message.username}
-          username={message.username}
-          avatar={message.avatar}
-          timestamp={message.timestamp}
-          content={message.content}
-        />
-      ))}
-    </div>
   );
 }
 
@@ -105,7 +83,7 @@ function Message({
   content: string;
 }) {
   return (
-    <div className="flex gap-4 hover:bg-accent py-4 px-6 ">
+    <div className="flex gap-4 hover:bg-accent py-4 px-6">
       <div className="py-1.5">
         <Avatar className="size-9 text-sm">
           <AvatarImage src={avatar} />
@@ -156,20 +134,13 @@ function MessageActions() {
 }
 
 function UsersList() {
-  const users = [
-    { username: "HH", avatar: "AZ", online: true },
-    { username: "1234", avatar: "IH", online: false },
-    { username: "Yes", avatar: "NO", online: true },
-    { username: "Glass", avatar: "QW", online: true },
-    { username: "asdfasdf", avatar: "TY", online: false },
-  ];
   return (
     <div className="flex flex-col gap-2 w-full">
-      <div className="flex flex-col ">
+      <div className="flex flex-col">
         <h3 className="font-semibold text-muted-foreground text-sm">
           Online - 100
         </h3>
-        {users
+        {usersData
           .filter((user) => user.online === true)
           .map((user) => (
             <div
@@ -185,11 +156,11 @@ function UsersList() {
           ))}
       </div>
       <Separator />
-      <div className="flex flex-col ">
+      <div className="flex flex-col">
         <h3 className="font-semibold text-muted-foreground text-sm">
           Offline - 98
         </h3>
-        {users
+        {usersData
           .filter((user) => user.online === false)
           .map((user) => (
             <div

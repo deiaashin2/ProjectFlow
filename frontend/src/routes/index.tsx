@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Alert, AlertTitle, AlertDescription } from "../components/ui/alert";
 import { Terminal } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -9,7 +10,16 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <div>
-      <Alert >
+      <Link to="/" className="[&.active]:font-bold">
+        Home
+      </Link>{" "}
+      <Link to="/about" className="[&.active]:font-bold">
+        About
+      </Link>
+      <Link to="/messages" className="[&.active]:font-bold">
+        Messages
+      </Link>
+      <Alert>
         <Terminal className="h-6 w-6" />
         <AlertTitle className=" text-3xl">Heads up!</AlertTitle>
         <AlertDescription className=" text-3xl">

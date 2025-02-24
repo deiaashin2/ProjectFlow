@@ -158,7 +158,7 @@ export function MessageSidebar({
             >
               <SidebarGroup>
                 <SidebarGroupLabel
-                  className="group/label  text-sm text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  className="group/label text-sm text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                   asChild
                 >
                   <CollapsibleTrigger>

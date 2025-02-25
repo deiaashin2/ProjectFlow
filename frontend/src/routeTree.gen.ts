@@ -11,17 +11,11 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as MessagesImport } from './routes/messages'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
+import { Route as MessagesIndexImport } from './routes/messages/index'
 
 // Create/Update Routes
-
-const MessagesRoute = MessagesImport.update({
-  id: '/messages',
-  path: '/messages',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const AboutRoute = AboutImport.update({
   id: '/about',
@@ -32,6 +26,12 @@ const AboutRoute = AboutImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MessagesIndexRoute = MessagesIndexImport.update({
+  id: '/messages/',
+  path: '/messages/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -53,11 +53,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
-    '/messages': {
-      id: '/messages'
+    '/messages/': {
+      id: '/messages/'
       path: '/messages'
       fullPath: '/messages'
-      preLoaderRoute: typeof MessagesImport
+      preLoaderRoute: typeof MessagesIndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -68,20 +68,20 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/messages': typeof MessagesRoute
+  '/messages': typeof MessagesIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/messages': typeof MessagesRoute
+  '/messages': typeof MessagesIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/messages': typeof MessagesRoute
+  '/messages/': typeof MessagesIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -89,20 +89,20 @@ export interface FileRouteTypes {
   fullPaths: '/' | '/about' | '/messages'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/about' | '/messages'
-  id: '__root__' | '/' | '/about' | '/messages'
+  id: '__root__' | '/' | '/about' | '/messages/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  MessagesRoute: typeof MessagesRoute
+  MessagesIndexRoute: typeof MessagesIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  MessagesRoute: MessagesRoute,
+  MessagesIndexRoute: MessagesIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -117,7 +117,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
-        "/messages"
+        "/messages/"
       ]
     },
     "/": {
@@ -126,8 +126,8 @@ export const routeTree = rootRoute
     "/about": {
       "filePath": "about.tsx"
     },
-    "/messages": {
-      "filePath": "messages.tsx"
+    "/messages/": {
+      "filePath": "messages/index.tsx"
     }
   }
 }

@@ -261,7 +261,14 @@ export const messagesData: Message[] = [
   },
 ];
 
-export const usersData = [
+export type User = {
+  username: string;
+  avatar: string;
+  online: boolean;
+  role: string;
+};
+
+export const usersData: User[] = [
   { username: "HH", avatar: "AZ", online: true, role: "User" },
   { username: "1234", avatar: "IH", online: false, role: "Admin" },
   { username: "Yes", avatar: "NO", online: true, role: "Owner" },

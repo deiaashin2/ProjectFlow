@@ -1,8 +1,7 @@
-import React from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MessageSidebar } from "@/components/messages-sidebar";
 import { Separator } from "@/components/ui/separator";
-import { usersData } from "@/lib/mock-data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -26,7 +25,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Suspense, useEffect, useRef, useState } from "react";
 import useMessages from "@/hooks/useMessages";
 import {
   Breadcrumb,
@@ -35,11 +33,12 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import githubLogoDark from "../assets/github-mark.png";
+import githubLogoDark from "@/assets/github-mark.png";
 import { useInView } from "react-intersection-observer";
 import { ErrorBoundary } from "react-error-boundary";
+import UsersList from "./-users-list";
 
-export const Route = createFileRoute("/messages")({
+export const Route = createFileRoute("/messages/")({
   component: RouteComponent,
 });
 
@@ -106,7 +105,7 @@ function RouteComponent() {
             </span>
           </div>
           <div className="hidden lg:flex items-center min-w-56 lg:min-w-64 border-l bg-sidebar-accent pl-2 ">
-            <h3 className="text-2xl font-semibold ">Users</h3>
+            <h3 className="text-2xl font-semibold">Users</h3>
           </div>
         </header>
 
@@ -270,61 +269,5 @@ function IconTooltip({
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
-  );
-}
-
-function UsersList() {
-  const groupedUsers: Record<string, User[]> = {};
-  for (const user of usersData) {
-    const key = user.online ? user.role : "Offline";
-
-    if (!(key in groupedUsers)) {
-      groupedUsers[key] = [];
-    }
-    groupedUsers[key].push(user);
-  }
-
-  // Displays roles in this order
-  const roleOrder = ["Owner", "Admin", "Moderator", "User", "Offline"];
-  return (
-    <div className="flex flex-col gap-2 w-full">
-      {Object.entries(groupedUsers)
-        .sort(
-          ([roleA], [roleB]) =>
-            roleOrder.indexOf(roleA) - roleOrder.indexOf(roleB)
-        )
-        .map(([role, users]) => (
-          <UserGroup key={role} usersData={users} role={role} />
-        ))}
-    </div>
-  );
-}
-
-type User = {
-  username: string;
-  avatar: string;
-  online: boolean;
-  role: string;
-};
-
-function UserGroup({ usersData, role }: { usersData: User[]; role?: string }) {
-  return (
-    <div className="flex flex-col">
-      <h3 className="font-semibold text-muted-foreground text-base">{role}</h3>
-      {usersData.map((user) => (
-        <div
-          className="flex items-center gap-2 hover:bg-gray-200 p-1 rounded-sm"
-          key={user.username}
-        >
-          <Avatar className="size-8 text-xs">
-            <AvatarImage src={user.avatar} />
-            <AvatarFallback className="bg-sidebar-border">
-              {user.avatar}
-            </AvatarFallback>
-          </Avatar>
-          <span className="text-sm font-medium">{user.username}</span>
-        </div>
-      ))}
-    </div>
   );
 }

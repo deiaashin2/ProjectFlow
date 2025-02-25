@@ -25,7 +25,6 @@ async function getMessages({
   pageParam: number;
 }): Promise<{ data: Message[]; currentPage: number; nextPage: number | null }> {
   // Replace with fetch to messages passing in cursor
-
   return new Promise((resolve) =>
     setTimeout(() => {
       resolve({

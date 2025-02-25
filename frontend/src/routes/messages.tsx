@@ -80,25 +80,29 @@ function RouteComponent() {
               className="hover:bg-sidebar-accent p-2 rounded-lg cursor-pointer"
               onClick={toggleDarkMode}
             >
-              {isDarkMode ? (
-                <SunMoon className="size-6" />
-              ) : (
-                <MoonStar className="size-6" />
-              )}
+              <IconTooltip label="Toggle Theme">
+                {isDarkMode ? (
+                  <SunMoon className="size-6" />
+                ) : (
+                  <MoonStar className="size-6" />
+                )}
+              </IconTooltip>
             </span>
-            <span className="hover:bg-sidebar-accent p-2 rounded-lg cursor-pointer">
-              <Avatar className="flex items-center justify-center">
-                <a
-                  href="https://github.com/deiaashin2/ProjectFlow"
-                  target="_blank"
-                >
-                  <AvatarImage
-                    src={githubLogoDark}
-                    className="size-6"
-                    alt="Logo of GitHub"
-                  />
-                </a>
-              </Avatar>
+            <span className="hover:bg-sidebar-accent p-1 rounded-lg cursor-pointer">
+              <IconTooltip label="Visit Project on Github">
+                <Avatar className="flex items-center justify-center">
+                  <a
+                    href="https://github.com/deiaashin2/ProjectFlow"
+                    target="_blank"
+                  >
+                    <AvatarImage
+                      src={githubLogoDark}
+                      className="size-6"
+                      alt="Logo of GitHub"
+                    />
+                  </a>
+                </Avatar>
+              </IconTooltip>
             </span>
           </div>
           <div className="hidden lg:flex items-center min-w-56 lg:min-w-64 border-l bg-sidebar-accent pl-2 ">
@@ -107,7 +111,7 @@ function RouteComponent() {
         </header>
 
         {/* Messages Layout */}
-        <div className="flex flex-row flex-grow h-0 ">
+        <div className="flex flex-grow h-0 ">
           <div className="flex flex-col w-full h-full gap-4">
             <div className="flex flex-col-reverse flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent ">
               <ErrorBoundary fallback={<div>Something went wrong</div>}>
@@ -139,7 +143,7 @@ function MessageBreadcrumb() {
   const navItems = [
     { title: "Home", url: "/" },
     { title: "Groups", url: "/" },
-    { title: "Messages", url: "/message" },
+    { title: "Messages", url: "/messages" },
   ];
   return (
     <Breadcrumb>
@@ -238,20 +242,34 @@ function MessageActions() {
   return (
     <>
       {actions.map((action, index) => (
-        <TooltipProvider key={index}>
-          <Tooltip>
-            <TooltipTrigger>
-              <span className="flex hover:bg-neutral-200 cursor-pointer p-1 border-r">
-                <action.icon className="shrink-0 size-5" />
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{action.label}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <React.Fragment key={index}>
+          <IconTooltip label={action.label}>
+            <span className="flex hover:bg-neutral-200 cursor-pointer p-1 border-r">
+              <action.icon className="shrink-0 size-5" />
+            </span>
+          </IconTooltip>
+        </React.Fragment>
       ))}
     </>
+  );
+}
+
+function IconTooltip({
+  children,
+  label,
+}: {
+  children: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>{children}</TooltipTrigger>
+        <TooltipContent>
+          <p>{label}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
 

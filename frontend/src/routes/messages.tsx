@@ -16,13 +16,22 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Input } from "@/components/ui/input";
+import { useEffect, useRef } from "react";
 
 export const Route = createFileRoute("/messages")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Automatically scroll into view on page load`
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, []);
+
   return (
     <SidebarProvider
       style={
@@ -36,14 +45,14 @@ function RouteComponent() {
         {/* Header */}
         <header className="sticky top-0 flex shrink-0 items-center gap-2 border-b bg-background p-4">
           <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-2" />
-          <span className="text-xl grow"># Project Flow</span>
+          <Separator orientation="vertical" className="mr-2" />
+          <span className="text-xl"># Project Flow</span>
         </header>
 
         {/* Messages Layout */}
         <div className="flex flex-row flex-grow h-0 ">
           <div className="flex flex-col w-full h-full gap-4 ">
-            <div className="flex flex-col-reverse gap-4 flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent">
+            <div className="flex flex-col-reverse gap-4 flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent ">
               {messagesData.map((message) => (
                 <Message
                   key={message.username}
@@ -117,8 +126,8 @@ function MessageActions() {
   ];
   return (
     <>
-      {actions.map((action) => (
-        <TooltipProvider>
+      {actions.map((action, index) => (
+        <TooltipProvider key={index}>
           <Tooltip>
             <TooltipTrigger>
               <span className="flex hover:bg-neutral-200 cursor-pointer p-1 border-r">
@@ -136,47 +145,57 @@ function MessageActions() {
 }
 
 function UsersList() {
+  const groupedUsers: Record<string, User[]> = {};
+  for (const user of usersData) {
+    const key = user.online ? user.role : "Offline";
+
+    if (!(key in groupedUsers)) {
+      groupedUsers[key] = [];
+    }
+    groupedUsers[key].push(user);
+  }
+
+  // Displays roles in this order
+  const roleOrder = ["Owner", "Admin", "Moderator", "User", "Offline"];
   return (
     <div className="flex flex-col gap-2 w-full">
-      <div className="flex flex-col">
-        <h3 className="font-semibold text-muted-foreground text-base">
-          Online - 100
-        </h3>
-        {usersData
-          .filter((user) => user.online === true)
-          .map((user) => (
-            <div
-              className="flex items-center gap-2 hover:bg-gray-200 p-1 rounded-sm"
-              key={user.username}
-            >
-              <Avatar className="size-8 text-xs">
-                <AvatarImage src={user.avatar} />
-                <AvatarFallback>{user.avatar}</AvatarFallback>
-              </Avatar>
-              <span className="text-sm font-medium">{user.username}</span>
-            </div>
-          ))}
-      </div>
-      <Separator />
-      <div className="flex flex-col">
-        <h3 className="font-semibold text-muted-foreground text-base">
-          Offline - 98
-        </h3>
-        {usersData
-          .filter((user) => user.online === false)
-          .map((user) => (
-            <div
-              className="flex items-center gap-2 hover:bg-gray-200 p-1 rounded-sm"
-              key={user.username}
-            >
-              <Avatar className="size-8 text-xs">
-                <AvatarImage src={user.avatar} />
-                <AvatarFallback>{user.avatar}</AvatarFallback>
-              </Avatar>
-              <span className="text-sm font-medium">{user.username}</span>
-            </div>
-          ))}
-      </div>
+      {Object.entries(groupedUsers)
+        .sort(
+          ([roleA], [roleB]) =>
+            roleOrder.indexOf(roleA) - roleOrder.indexOf(roleB)
+        )
+        .map(([role, users]) => (
+          <UserGroup key={role} usersData={users} role={role} />
+        ))}
+    </div>
+  );
+}
+
+type User = {
+  username: string;
+  avatar: string;
+  online: boolean;
+  role: string;
+};
+
+function UserGroup({ usersData, role }: { usersData: User[]; role?: string }) {
+  return (
+    <div className="flex flex-col">
+      <h3 className="font-semibold text-muted-foreground text-base">{role}</h3>
+      {usersData.map((user) => (
+        <div
+          className="flex items-center gap-2 hover:bg-gray-200 p-1 rounded-sm"
+          key={user.username}
+        >
+          <Avatar className="size-8 text-xs">
+            <AvatarImage src={user.avatar} />
+            <AvatarFallback className="bg-sidebar-border">
+              {user.avatar}
+            </AvatarFallback>
+          </Avatar>
+          <span className="text-sm font-medium">{user.username}</span>
+        </div>
+      ))}
     </div>
   );
 }

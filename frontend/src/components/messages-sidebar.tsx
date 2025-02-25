@@ -146,7 +146,7 @@ export function MessageSidebar({
 
       <Sidebar collapsible="none" className="hidden flex-1 md:flex">
         <SidebarHeader className="gap-3.5 border-b p-4">
-          <h2 className="font-bold text-lg">Channels</h2>
+          <h2 className="font-bold text-lg">Project Flow</h2>
         </SidebarHeader>
         <SidebarContent>
           {channels.map((channel) => (

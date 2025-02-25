@@ -1,10 +1,18 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { MessageSidebar } from "@/components/messages-sidebar";
 import { Separator } from "@/components/ui/separator";
 import { usersData } from "@/lib/mock-data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
-import { Ellipsis, Pencil, Smile, Forward } from "lucide-react";
+import {
+  Ellipsis,
+  Pencil,
+  Smile,
+  Forward,
+  ArrowRight,
+  SunMoon,
+  MoonStar,
+} from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
@@ -17,8 +25,16 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import useMessages from "@/hooks/useMessages";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import githubLogoDark from "../assets/github-mark.png";
 
 export const Route = createFileRoute("/messages")({
   component: RouteComponent,
@@ -27,6 +43,7 @@ export const Route = createFileRoute("/messages")({
 function RouteComponent() {
   const { data: messages, isPending } = useMessages();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isDarkMode, setIsDarkmode] = useState(false);
 
   // Automatically scroll into view on page load`
   useEffect(() => {
@@ -34,6 +51,10 @@ function RouteComponent() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, []);
+
+  const toggleDarkMode = () => {
+    setIsDarkmode((prevState) => !prevState);
+  };
 
   return (
     <SidebarProvider
@@ -46,15 +67,80 @@ function RouteComponent() {
       <MessageSidebar />
       <SidebarInset>
         {/* Header */}
-        <header className="sticky top-0 flex shrink-0 items-center gap-2 border-t-0 border-b bg-background p-4">
-          <SidebarTrigger className="ml-1" />
-          <Separator orientation="vertical" className="mr-2" />
-          <span className="text-lg"># Project Flow</span>
+        <header className=" sticky top-0 flex shrink-0 gap-4 border-b">
+          <div className="flex items-center gap-2 flex-grow p-4 ">
+            <SidebarTrigger className="ml-1" />
+            <Separator orientation="vertical" className="mr-2" />
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link className="text-lg" to="/">
+                      Home
+                    </Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+
+                <BreadcrumbSeparator>
+                  <ArrowRight />
+                </BreadcrumbSeparator>
+
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    {/* Replace link with actual group url*/}
+                    <Link className="text-lg" to="/">
+                      Groups
+                    </Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+
+                <BreadcrumbSeparator>
+                  <ArrowRight />
+                </BreadcrumbSeparator>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link className="text-lg" to="/messages">
+                      Messages
+                    </Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+          <div className="flex items-center">
+            <span
+              className="hover:bg-sidebar-accent p-2 rounded-lg cursor-pointer"
+              onClick={toggleDarkMode}
+            >
+              {isDarkMode ? (
+                <SunMoon className="size-6" />
+              ) : (
+                <MoonStar className="size-6" />
+              )}
+            </span>
+            <span className="hover:bg-sidebar-accent p-2 rounded-lg cursor-pointer">
+              <Avatar className="flex items-center justify-center">
+                <a
+                  href="https://github.com/deiaashin2/ProjectFlow"
+                  target="_blank"
+                >
+                  <AvatarImage
+                    src={githubLogoDark}
+                    className="size-6"
+                    alt="Logo of GitHub"
+                  />
+                </a>
+              </Avatar>
+            </span>
+          </div>
+          <div className="hidden lg:flex items-center min-w-56 lg:min-w-64 border-l bg-sidebar-accent pl-2 ">
+            <h3 className="text-2xl font-semibold ">Users</h3>
+          </div>
         </header>
 
         {/* Messages Layout */}
         <div className="flex flex-row flex-grow h-0 ">
-          <div className="flex flex-col w-full h-full gap-4 ">
+          <div className="flex flex-col w-full h-full gap-4">
             <div className="flex flex-col-reverse flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent ">
               {isPending &&
                 [1, 2, 3, 4, 5].map((index) => <MessageSkeleton key={index} />)}
@@ -79,7 +165,7 @@ function RouteComponent() {
           </div>
 
           {/* User Sidebar */}
-          <div className="hidden md:flex min-w-56 lg:min-w-64 p-2 border-l bg-sidebar-accent ">
+          <div className="hidden lg:flex min-w-56 lg:min-w-64 p-2 border-l bg-sidebar-accent ">
             <UsersList />
           </div>
         </div>

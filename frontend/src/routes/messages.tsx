@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MessageSidebar } from "@/components/messages-sidebar";
 import { Separator } from "@/components/ui/separator";
-import { messagesData, usersData } from "@/lib/mock-data";
+import { usersData } from "@/lib/mock-data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
 import { Ellipsis, Pencil, Smile, Forward } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
@@ -17,12 +18,14 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { useEffect, useRef } from "react";
+import useMessages from "@/hooks/useMessages";
 
 export const Route = createFileRoute("/messages")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const { data: messages, isPending } = useMessages();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Automatically scroll into view on page load`
@@ -52,16 +55,19 @@ function RouteComponent() {
         {/* Messages Layout */}
         <div className="flex flex-row flex-grow h-0 ">
           <div className="flex flex-col w-full h-full gap-4 ">
-            <div className="flex flex-col-reverse gap-4 flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent ">
-              {messagesData.map((message) => (
-                <Message
-                  key={message.username}
-                  username={message.username}
-                  avatar={message.avatar}
-                  timestamp={message.timestamp}
-                  content={message.content}
-                />
-              ))}
+            <div className="flex flex-col-reverse flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent ">
+              {isPending &&
+                [1, 2, 3, 4, 5].map((index) => <MessageSkeleton key={index} />)}
+              {messages &&
+                messages.map((message) => (
+                  <Message
+                    key={message.username}
+                    username={message.username}
+                    avatar={message.avatar}
+                    timestamp={message.timestamp}
+                    content={message.content}
+                  />
+                ))}
             </div>
 
             <div className="px-4 pb-6">
@@ -112,6 +118,21 @@ function Message({
           </div>
         </div>
         <p className="text-sm">{content}</p>
+      </div>
+    </div>
+  );
+}
+
+function MessageSkeleton() {
+  return (
+    <div className="flex gap-4 py-4 px-6">
+      <div className="py-1.5">
+        <Skeleton className="rounded-full size-9" />
+      </div>
+      <div className="flex flex-col gap-2 w-full">
+        <Skeleton className="h-6 w-32" />
+        <Skeleton className="h-6 w-full" />
+        <Skeleton className="h-6 w-full" />
       </div>
     </div>
   );

@@ -26,7 +26,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { useEffect, useRef, useState } from "react";
-import useMessages from "@/hooks/useMessages";
+import useMessages, { Message } from "@/hooks/useMessages";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -35,15 +35,28 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import githubLogoDark from "../assets/github-mark.png";
+import React from "react";
+import { useInView } from "react-intersection-observer";
+import { InfiniteData } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/messages")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { data: messages, isPending } = useMessages();
+  // const { data: messages, isPending } = useMessages();
+  const {
+    data: messages,
+    isPending,
+    isError,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useMessages();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isDarkMode, setIsDarkmode] = useState(false);
+  const { inView, ref } = useInView();
+
+  console.log(messages);
 
   // Automatically scroll into view on page load`
   useEffect(() => {
@@ -51,6 +64,12 @@ function RouteComponent() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, []);
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView, fetchNextPage]);
 
   const toggleDarkMode = () => {
     setIsDarkmode((prevState) => !prevState);
@@ -142,18 +161,9 @@ function RouteComponent() {
         <div className="flex flex-row flex-grow h-0 ">
           <div className="flex flex-col w-full h-full gap-4">
             <div className="flex flex-col-reverse flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent ">
-              {isPending &&
-                [1, 2, 3, 4, 5].map((index) => <MessageSkeleton key={index} />)}
-              {messages &&
-                messages.map((message) => (
-                  <Message
-                    key={message.username}
-                    username={message.username}
-                    avatar={message.avatar}
-                    timestamp={message.timestamp}
-                    content={message.content}
-                  />
-                ))}
+              {isPending && <MessageSkeleton />}
+              {messages && <MessageList messages={messages} />}
+              <div ref={ref}>{isFetchingNextPage && <MessageSkeleton />}</div>
             </div>
 
             <div className="px-4 pb-6">
@@ -174,44 +184,51 @@ function RouteComponent() {
   );
 }
 
-function Message({
-  username,
-  avatar,
-  timestamp,
-  content,
+function MessageList({
+  messages,
 }: {
-  username: string;
-  avatar: string;
-  timestamp: string;
-  content: string;
+  messages: InfiniteData<
+    {
+      data: Message[];
+      currentPage: number;
+      nextPage: number | null;
+    },
+    unknown
+  >;
 }) {
-  return (
-    <div className="flex gap-4 hover:bg-accent py-4 px-6">
-      <div className="py-1.5">
-        <Avatar className="size-9 text-sm">
-          <AvatarImage src={avatar} />
-          <AvatarFallback className="bg-red-200">AN</AvatarFallback>
-        </Avatar>
-      </div>
-      <div className="grow">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <h3 className="font-semibold">{username}</h3>
-            <span className="text-gray-500 text-xs">{timestamp}</span>
+  return messages.pages.map((page, index) => (
+    <React.Fragment key={index}>
+      {page.data.map((message, index) => (
+        <div className="flex gap-4 hover:bg-accent py-4 px-6" key={index}>
+          <div className="py-1.5">
+            <Avatar className="size-9 text-sm">
+              <AvatarImage src={message.avatar} />
+              <AvatarFallback className="bg-red-200">AN</AvatarFallback>
+            </Avatar>
           </div>
-          <div className="flex items-center border">
-            <MessageActions />
+          <div className="grow">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold">{message.username}</h3>
+                <span className="text-gray-500 text-xs">
+                  {message.timestamp}
+                </span>
+              </div>
+              <div className="flex items-center border">
+                <MessageActions />
+              </div>
+            </div>
+            <p className="text-sm">{message.content}</p>
           </div>
         </div>
-        <p className="text-sm">{content}</p>
-      </div>
-    </div>
-  );
+      ))}
+    </React.Fragment>
+  ));
 }
 
-function MessageSkeleton() {
-  return (
-    <div className="flex gap-4 py-4 px-6">
+function MessageSkeleton({ length = 10 }) {
+  return Array.from({ length: length }).map((_, index) => (
+    <div key={index} className="flex gap-4 py-4 px-6">
       <div className="py-1.5">
         <Skeleton className="rounded-full size-9" />
       </div>
@@ -221,7 +238,7 @@ function MessageSkeleton() {
         <Skeleton className="h-6 w-full" />
       </div>
     </div>
-  );
+  ));
 }
 
 function MessageActions() {

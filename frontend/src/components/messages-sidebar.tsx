@@ -21,8 +21,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
   useSidebar,
-} from "./ui/sidebar";
+} from "@/components/ui/sidebar";
 import {
   Collapsible,
   CollapsibleContent,
@@ -109,7 +110,7 @@ export function MessageSidebar({
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>
-        <SidebarContent className="">
+        <SidebarContent className="px-1.5 md:px-0">
           <SidebarGroup>
             <SidebarGroupContent className="px-1.5 md:px-0 ">
               <SidebarMenu>
@@ -139,9 +140,6 @@ export function MessageSidebar({
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
-        <SidebarFooter>
-          <NavUser user={user} />
-        </SidebarFooter>
       </Sidebar>
 
       <Sidebar collapsible="none" className="hidden flex-1 md:flex">
@@ -189,6 +187,10 @@ export function MessageSidebar({
             </Collapsible>
           ))}
         </SidebarContent>
+        <SidebarFooter>
+          <NavUser user={user} />
+        </SidebarFooter>
+        <SidebarRail />
       </Sidebar>
     </Sidebar>
   );

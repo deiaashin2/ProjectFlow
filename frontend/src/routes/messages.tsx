@@ -1,3 +1,4 @@
+import React from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MessageSidebar } from "@/components/messages-sidebar";
 import { Separator } from "@/components/ui/separator";
@@ -25,8 +26,8 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { useEffect, useRef, useState } from "react";
-import useMessages, { Message } from "@/hooks/useMessages";
+import { Suspense, useEffect, useRef, useState } from "react";
+import useMessages from "@/hooks/useMessages";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -35,28 +36,16 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import githubLogoDark from "../assets/github-mark.png";
-import React from "react";
 import { useInView } from "react-intersection-observer";
-import { InfiniteData } from "@tanstack/react-query";
+import { ErrorBoundary } from "react-error-boundary";
 
 export const Route = createFileRoute("/messages")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  // const { data: messages, isPending } = useMessages();
-  const {
-    data: messages,
-    isPending,
-    isError,
-    fetchNextPage,
-    isFetchingNextPage,
-  } = useMessages();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isDarkMode, setIsDarkmode] = useState(false);
-  const { inView, ref } = useInView();
-
-  console.log(messages);
 
   // Automatically scroll into view on page load`
   useEffect(() => {
@@ -64,12 +53,6 @@ function RouteComponent() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, []);
-
-  useEffect(() => {
-    if (inView) {
-      fetchNextPage();
-    }
-  }, [inView, fetchNextPage]);
 
   const toggleDarkMode = () => {
     setIsDarkmode((prevState) => !prevState);
@@ -90,41 +73,7 @@ function RouteComponent() {
           <div className="flex items-center gap-2 flex-grow p-4 ">
             <SidebarTrigger className="ml-1" />
             <Separator orientation="vertical" className="mr-2" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    <Link className="text-lg" to="/">
-                      Home
-                    </Link>
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-
-                <BreadcrumbSeparator>
-                  <ArrowRight />
-                </BreadcrumbSeparator>
-
-                <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    {/* Replace link with actual group url*/}
-                    <Link className="text-lg" to="/">
-                      Groups
-                    </Link>
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-
-                <BreadcrumbSeparator>
-                  <ArrowRight />
-                </BreadcrumbSeparator>
-                <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    <Link className="text-lg" to="/messages">
-                      Messages
-                    </Link>
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+            <MessageBreadcrumb />
           </div>
           <div className="flex items-center">
             <span
@@ -161,9 +110,11 @@ function RouteComponent() {
         <div className="flex flex-row flex-grow h-0 ">
           <div className="flex flex-col w-full h-full gap-4">
             <div className="flex flex-col-reverse flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent ">
-              {isPending && <MessageSkeleton />}
-              {messages && <MessageList messages={messages} />}
-              <div ref={ref}>{isFetchingNextPage && <MessageSkeleton />}</div>
+              <ErrorBoundary fallback={<div>Something went wrong</div>}>
+                <Suspense fallback={<MessageSkeleton />}>
+                  <MessageList />
+                </Suspense>
+              </ErrorBoundary>
             </div>
 
             <div className="px-4 pb-6">
@@ -184,46 +135,82 @@ function RouteComponent() {
   );
 }
 
-function MessageList({
-  messages,
-}: {
-  messages: InfiniteData<
-    {
-      data: Message[];
-      currentPage: number;
-      nextPage: number | null;
-    },
-    unknown
-  >;
-}) {
-  return messages.pages.map((page, index) => (
-    <React.Fragment key={index}>
-      {page.data.map((message, index) => (
-        <div className="flex gap-4 hover:bg-accent py-4 px-6" key={index}>
-          <div className="py-1.5">
-            <Avatar className="size-9 text-sm">
-              <AvatarImage src={message.avatar} />
-              <AvatarFallback className="bg-red-200">AN</AvatarFallback>
-            </Avatar>
-          </div>
-          <div className="grow">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <h3 className="font-semibold">{message.username}</h3>
-                <span className="text-gray-500 text-xs">
-                  {message.timestamp}
-                </span>
+function MessageBreadcrumb() {
+  const navItems = [
+    { title: "Home", url: "/" },
+    { title: "Groups", url: "/" },
+    { title: "Messages", url: "/message" },
+  ];
+  return (
+    <Breadcrumb>
+      <BreadcrumbList>
+        {navItems.map((navItem, index) => (
+          <React.Fragment key={index}>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to={navItem.url} className="text-lg">
+                  {navItem.title}
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            {index !== navItems.length - 1 && (
+              <BreadcrumbSeparator>
+                <ArrowRight />
+              </BreadcrumbSeparator>
+            )}
+          </React.Fragment>
+        ))}
+      </BreadcrumbList>
+    </Breadcrumb>
+  );
+}
+
+function MessageList() {
+  const { inView, ref } = useInView();
+  const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
+    useMessages();
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
+
+  return (
+    <>
+      {data.pages.map((page, index) => (
+        <React.Fragment key={index}>
+          {page.data.map((message, index) => (
+            <div className="flex gap-4 hover:bg-accent py-4 px-6" key={index}>
+              <div className="py-1.5">
+                <Avatar className="size-9 text-sm">
+                  <AvatarImage src={message.avatar} />
+                  <AvatarFallback className="bg-red-200">AN</AvatarFallback>
+                </Avatar>
               </div>
-              <div className="flex items-center border">
-                <MessageActions />
+              <div className="grow">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold">{message.username}</h3>
+                    <span className="text-gray-500 text-xs">
+                      {message.timestamp}
+                    </span>
+                  </div>
+                  <div className="flex items-center border">
+                    <MessageActions />
+                  </div>
+                </div>
+                <p className="text-sm">{message.content}</p>
               </div>
             </div>
-            <p className="text-sm">{message.content}</p>
-          </div>
-        </div>
+          ))}
+        </React.Fragment>
       ))}
-    </React.Fragment>
-  ));
+      {hasNextPage && (
+        <div ref={ref}>{isFetchingNextPage && <MessageSkeleton />}</div>
+      )}
+    </>
+  );
 }
 
 function MessageSkeleton({ length = 10 }) {

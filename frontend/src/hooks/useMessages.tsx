@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { messagesData } from "@/lib/mock-data";
 
 export type Message = {
@@ -11,7 +11,7 @@ export type Message = {
 const MESSAGE_LIMIT = 15;
 
 export function useMessages() {
-  return useInfiniteQuery({
+  return useSuspenseInfiniteQuery({
     queryKey: ["messages"],
     queryFn: getMessages,
     initialPageParam: 0,

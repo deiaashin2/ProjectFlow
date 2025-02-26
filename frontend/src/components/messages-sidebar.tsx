@@ -79,7 +79,7 @@ export function MessageSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const [activeItem, setActiveItem] = React.useState(navMain[0]);
-  const { setOpen } = useSidebar();
+  const { setOpen, isMobile } = useSidebar();
 
   return (
     <Sidebar
@@ -110,7 +110,7 @@ export function MessageSidebar({
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>
-        <SidebarContent className="px-1.5 md:px-0">
+        <SidebarContent>
           <SidebarGroup>
             <SidebarGroupContent className="px-1.5 md:px-0 ">
               <SidebarMenu>
@@ -140,6 +140,11 @@ export function MessageSidebar({
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
+        {isMobile && (
+          <SidebarFooter>
+            <NavUser user={user} />
+          </SidebarFooter>
+        )}
       </Sidebar>
 
       <Sidebar collapsible="none" className="hidden flex-1 md:flex">

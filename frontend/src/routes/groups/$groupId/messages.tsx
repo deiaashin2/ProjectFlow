@@ -14,12 +14,7 @@ import {
   MoonStar,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import IconTooltip from "@/components/icon-tooltip";
 import {
   SidebarInset,
   SidebarProvider,
@@ -36,15 +31,15 @@ import {
 import githubLogoDark from "@/assets/github-mark.png";
 import { useInView } from "react-intersection-observer";
 import { ErrorBoundary } from "react-error-boundary";
-import UsersList from "./-users-list";
+import UsersList from "@/features/messages/users-list";
 
-export const Route = createFileRoute("/messages/")({
-  component: RouteComponent,
+export const Route = createFileRoute("/groups/$groupId/messages")({
+  component: MessagePage,
 });
 
-function RouteComponent() {
+function MessagePage() {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [isDarkMode, setIsDarkmode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Automatically scroll into view on page load`
   useEffect(() => {
@@ -54,7 +49,7 @@ function RouteComponent() {
   }, []);
 
   const toggleDarkMode = () => {
-    setIsDarkmode((prevState) => !prevState);
+    setIsDarkMode((prevState) => !prevState);
   };
 
   return (
@@ -141,8 +136,8 @@ function RouteComponent() {
 function MessageBreadcrumb() {
   const navItems = [
     { title: "Home", url: "/" },
-    { title: "Groups", url: "/" },
-    { title: "Messages", url: "/messages" },
+    { title: "Groups", url: "/groups" },
+    { title: "Messages", url: "/groups/1/messages" },
   ];
   return (
     <Breadcrumb>
@@ -177,7 +172,7 @@ function MessageList() {
     if (inView) {
       fetchNextPage();
     }
-  }, [inView]);
+  }, [inView, fetchNextPage]);
 
   return (
     <>
@@ -250,24 +245,5 @@ function MessageActions() {
         </React.Fragment>
       ))}
     </>
-  );
-}
-
-function IconTooltip({
-  children,
-  label,
-}: {
-  children: React.ReactNode;
-  label: string;
-}) {
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>{children}</TooltipTrigger>
-        <TooltipContent>
-          <p>{label}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
   );
 }

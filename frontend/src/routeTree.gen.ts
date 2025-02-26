@@ -13,7 +13,8 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
-import { Route as MessagesIndexImport } from './routes/messages/index'
+import { Route as GroupsIndexImport } from './routes/groups/index'
+import { Route as GroupsGroupIdMessagesImport } from './routes/groups/$groupId/messages'
 
 // Create/Update Routes
 
@@ -29,9 +30,15 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const MessagesIndexRoute = MessagesIndexImport.update({
-  id: '/messages/',
-  path: '/messages/',
+const GroupsIndexRoute = GroupsIndexImport.update({
+  id: '/groups/',
+  path: '/groups/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const GroupsGroupIdMessagesRoute = GroupsGroupIdMessagesImport.update({
+  id: '/groups/$groupId/messages',
+  path: '/groups/$groupId/messages',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -53,11 +60,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
-    '/messages/': {
-      id: '/messages/'
-      path: '/messages'
-      fullPath: '/messages'
-      preLoaderRoute: typeof MessagesIndexImport
+    '/groups/': {
+      id: '/groups/'
+      path: '/groups'
+      fullPath: '/groups'
+      preLoaderRoute: typeof GroupsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/groups/$groupId/messages': {
+      id: '/groups/$groupId/messages'
+      path: '/groups/$groupId/messages'
+      fullPath: '/groups/$groupId/messages'
+      preLoaderRoute: typeof GroupsGroupIdMessagesImport
       parentRoute: typeof rootRoute
     }
   }
@@ -68,41 +82,46 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/messages': typeof MessagesIndexRoute
+  '/groups': typeof GroupsIndexRoute
+  '/groups/$groupId/messages': typeof GroupsGroupIdMessagesRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/messages': typeof MessagesIndexRoute
+  '/groups': typeof GroupsIndexRoute
+  '/groups/$groupId/messages': typeof GroupsGroupIdMessagesRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/messages/': typeof MessagesIndexRoute
+  '/groups/': typeof GroupsIndexRoute
+  '/groups/$groupId/messages': typeof GroupsGroupIdMessagesRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/messages'
+  fullPaths: '/' | '/about' | '/groups' | '/groups/$groupId/messages'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/messages'
-  id: '__root__' | '/' | '/about' | '/messages/'
+  to: '/' | '/about' | '/groups' | '/groups/$groupId/messages'
+  id: '__root__' | '/' | '/about' | '/groups/' | '/groups/$groupId/messages'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  MessagesIndexRoute: typeof MessagesIndexRoute
+  GroupsIndexRoute: typeof GroupsIndexRoute
+  GroupsGroupIdMessagesRoute: typeof GroupsGroupIdMessagesRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  MessagesIndexRoute: MessagesIndexRoute,
+  GroupsIndexRoute: GroupsIndexRoute,
+  GroupsGroupIdMessagesRoute: GroupsGroupIdMessagesRoute,
 }
 
 export const routeTree = rootRoute
@@ -117,7 +136,8 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
-        "/messages/"
+        "/groups/",
+        "/groups/$groupId/messages"
       ]
     },
     "/": {
@@ -126,8 +146,11 @@ export const routeTree = rootRoute
     "/about": {
       "filePath": "about.tsx"
     },
-    "/messages/": {
-      "filePath": "messages/index.tsx"
+    "/groups/": {
+      "filePath": "groups/index.tsx"
+    },
+    "/groups/$groupId/messages": {
+      "filePath": "groups/$groupId/messages.tsx"
     }
   }
 }

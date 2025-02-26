@@ -16,7 +16,7 @@ function Index() {
       <Link to="/about" className="[&.active]:font-bold">
         About
       </Link>
-      <Link to="/messages" className="[&.active]:font-bold">
+      <Link to="/groups/$groupId/messages" params={{groupId : "1"}} className="[&.active]:font-bold">
         Messages
       </Link>
       <Alert>

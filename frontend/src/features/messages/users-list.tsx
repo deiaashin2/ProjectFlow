@@ -42,7 +42,7 @@ function UserGroup({ usersData, role }: { usersData: User[]; role?: string }) {
 
 function UserItem({ username, avatar }: { username: string; avatar: string }) {
   return (
-    <div className="flex items-center gap-2 hover:bg-gray-200 p-1 rounded-sm">
+    <div className="flex items-center gap-2 hover:bg-sidebar-accent p-1 rounded-sm">
       <Avatar className="size-8 text-xs">
         <AvatarImage src={avatar} />
         <AvatarFallback className="bg-sidebar-border">{avatar}</AvatarFallback>

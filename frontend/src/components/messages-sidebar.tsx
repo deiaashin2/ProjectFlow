@@ -130,7 +130,7 @@ export function MessageSidebar({
                       className="md:h-8 md:p-0"
                     >
                       <div className="bg-sidebar-border text-sidebar-primary flex aspect-square size-8 items-center justify-center rounded-lg cursor-pointer hover:opacity-55 ">
-                        <item.icon className="size-4" />
+                        <item.icon className="size-4 dark:text-primary" />
                       </div>
                       <span>{item.title}</span>
                     </SidebarMenuButton>

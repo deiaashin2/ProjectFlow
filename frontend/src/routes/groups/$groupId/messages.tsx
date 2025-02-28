@@ -1,18 +1,10 @@
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MessageSidebar } from "@/components/messages-sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Ellipsis,
-  Pencil,
-  Smile,
-  Forward,
-  ArrowRight,
-  SunMoon,
-  MoonStar,
-} from "lucide-react";
+import { Ellipsis, Pencil, Smile, Forward, ArrowRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import IconTooltip from "@/components/icon-tooltip";
 import {
@@ -28,10 +20,13 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import githubLogoLight from "@/assets/github-mark-white.png";
 import githubLogoDark from "@/assets/github-mark.png";
 import { useInView } from "react-intersection-observer";
 import { ErrorBoundary } from "react-error-boundary";
 import UsersList from "@/features/messages/users-list";
+import ThemeToggle from "@/components/theme-toggle";
+import { useTheme } from "@/components/theme-provider";
 
 export const Route = createFileRoute("/groups/$groupId/messages")({
   component: MessagePage,
@@ -39,7 +34,7 @@ export const Route = createFileRoute("/groups/$groupId/messages")({
 
 function MessagePage() {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { theme } = useTheme();
 
   // Automatically scroll into view on page load`
   useEffect(() => {
@@ -48,66 +43,52 @@ function MessagePage() {
     }
   }, []);
 
-  const toggleDarkMode = () => {
-    setIsDarkMode((prevState) => !prevState);
-  };
-
   return (
     <SidebarProvider
       style={
         {
-          "--sidebar-width": "300px",
+          "--sidebar-width": "325px",
         } as React.CSSProperties
       }
     >
       <MessageSidebar />
       <SidebarInset>
         {/* Header */}
-        <header className=" sticky top-0 flex shrink-0 gap-4 border-b">
+        <header className=" sticky top-0 flex shrink-0 gap-4 border-b dark:bg-sidebar">
           <div className="flex items-center gap-2 flex-grow p-4 ">
             <SidebarTrigger className="ml-1" />
             <Separator orientation="vertical" className="mr-2" />
             <MessageBreadcrumb />
           </div>
           <div className="flex items-center">
-            <span
-              className="hover:bg-sidebar-accent p-2 rounded-lg cursor-pointer"
-              onClick={toggleDarkMode}
-            >
-              <IconTooltip label="Toggle Theme">
-                {isDarkMode ? (
-                  <SunMoon className="size-6" />
-                ) : (
-                  <MoonStar className="size-6" />
-                )}
-              </IconTooltip>
-            </span>
-            <span className="hover:bg-sidebar-accent p-1 rounded-lg cursor-pointer">
-              <IconTooltip label="Visit Project on Github">
+            <ThemeToggle />
+
+            <IconTooltip label="Visit Project on Github">
+              <span className="hover:bg-sidebar-accent p-1 rounded-lg cursor-pointer">
                 <Avatar className="flex items-center justify-center">
                   <a
                     href="https://github.com/deiaashin2/ProjectFlow"
                     target="_blank"
                   >
                     <AvatarImage
-                      src={githubLogoDark}
+                      src={theme === "dark" ? githubLogoLight : githubLogoDark}
                       className="size-6"
                       alt="Logo of GitHub"
                     />
                   </a>
                 </Avatar>
-              </IconTooltip>
-            </span>
+              </span>
+            </IconTooltip>
           </div>
-          <div className="hidden lg:flex items-center min-w-56 lg:min-w-64 border-l bg-sidebar-accent pl-2 ">
+          <div className="hidden lg:flex items-center min-w-56 lg:min-w-64 border-l bg-sidebar pl-2 ">
             <h3 className="text-2xl font-semibold">Users</h3>
           </div>
         </header>
 
         {/* Messages Layout */}
-        <div className="flex flex-grow h-0 ">
-          <div className="flex flex-col w-full h-full gap-4">
-            <div className="flex flex-col-reverse flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent ">
+        <div className="flex flex-grow h-0 dark:bg-sidebar">
+          <div className="flex flex-col flex-grow">
+            <div className="flex flex-col-reverse flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300  scrollbar-track-transparent dark:scrollbar-thumb-sidebar-accent ">
               <ErrorBoundary fallback={<div>Something went wrong</div>}>
                 <Suspense fallback={<MessageSkeleton />}>
                   <MessageList />
@@ -115,16 +96,16 @@ function MessagePage() {
               </ErrorBoundary>
             </div>
 
-            <div className="px-4 pb-6">
+            <div className="px-4 pb-6 mt-6 ">
               <Textarea
                 placeholder="Type your message here."
-                className="resize-none"
+                className="resize-none "
               />
             </div>
           </div>
 
           {/* User Sidebar */}
-          <div className="hidden lg:flex min-w-56 lg:min-w-64 p-2 border-l bg-sidebar-accent ">
+          <div className="hidden lg:flex min-w-56 lg:min-w-64 p-2 border-l bg-sidebar">
             <UsersList />
           </div>
         </div>

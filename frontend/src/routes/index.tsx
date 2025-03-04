@@ -22,6 +22,13 @@ function Index() {
           Groups
         </Link>
         <Link
+          to="/groups/$groupId/information-hub"
+          params={{ groupId: "1" }}
+          className="[&.active]:font-bold text-blue-600"
+        >
+          Information Hub
+        </Link>
+        <Link
           to="/groups/$groupId/messages"
           params={{ groupId: "1" }}
           className="[&.active]:font-bold text-blue-600"

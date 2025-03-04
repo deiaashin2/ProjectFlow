@@ -15,6 +15,7 @@ import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as GroupsIndexImport } from './routes/groups/index'
 import { Route as GroupsGroupIdMessagesImport } from './routes/groups/$groupId/messages'
+import { Route as GroupsGroupIdInformationHubImport } from './routes/groups/$groupId/information-hub'
 
 // Create/Update Routes
 
@@ -42,6 +43,13 @@ const GroupsGroupIdMessagesRoute = GroupsGroupIdMessagesImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const GroupsGroupIdInformationHubRoute =
+  GroupsGroupIdInformationHubImport.update({
+    id: '/groups/$groupId/information-hub',
+    path: '/groups/$groupId/information-hub',
+    getParentRoute: () => rootRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -67,6 +75,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GroupsIndexImport
       parentRoute: typeof rootRoute
     }
+    '/groups/$groupId/information-hub': {
+      id: '/groups/$groupId/information-hub'
+      path: '/groups/$groupId/information-hub'
+      fullPath: '/groups/$groupId/information-hub'
+      preLoaderRoute: typeof GroupsGroupIdInformationHubImport
+      parentRoute: typeof rootRoute
+    }
     '/groups/$groupId/messages': {
       id: '/groups/$groupId/messages'
       path: '/groups/$groupId/messages'
@@ -83,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/groups': typeof GroupsIndexRoute
+  '/groups/$groupId/information-hub': typeof GroupsGroupIdInformationHubRoute
   '/groups/$groupId/messages': typeof GroupsGroupIdMessagesRoute
 }
 
@@ -90,6 +106,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/groups': typeof GroupsIndexRoute
+  '/groups/$groupId/information-hub': typeof GroupsGroupIdInformationHubRoute
   '/groups/$groupId/messages': typeof GroupsGroupIdMessagesRoute
 }
 
@@ -98,15 +115,32 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/groups/': typeof GroupsIndexRoute
+  '/groups/$groupId/information-hub': typeof GroupsGroupIdInformationHubRoute
   '/groups/$groupId/messages': typeof GroupsGroupIdMessagesRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/groups' | '/groups/$groupId/messages'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/groups'
+    | '/groups/$groupId/information-hub'
+    | '/groups/$groupId/messages'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/groups' | '/groups/$groupId/messages'
-  id: '__root__' | '/' | '/about' | '/groups/' | '/groups/$groupId/messages'
+  to:
+    | '/'
+    | '/about'
+    | '/groups'
+    | '/groups/$groupId/information-hub'
+    | '/groups/$groupId/messages'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/groups/'
+    | '/groups/$groupId/information-hub'
+    | '/groups/$groupId/messages'
   fileRoutesById: FileRoutesById
 }
 
@@ -114,6 +148,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   GroupsIndexRoute: typeof GroupsIndexRoute
+  GroupsGroupIdInformationHubRoute: typeof GroupsGroupIdInformationHubRoute
   GroupsGroupIdMessagesRoute: typeof GroupsGroupIdMessagesRoute
 }
 
@@ -121,6 +156,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   GroupsIndexRoute: GroupsIndexRoute,
+  GroupsGroupIdInformationHubRoute: GroupsGroupIdInformationHubRoute,
   GroupsGroupIdMessagesRoute: GroupsGroupIdMessagesRoute,
 }
 
@@ -137,6 +173,7 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/groups/",
+        "/groups/$groupId/information-hub",
         "/groups/$groupId/messages"
       ]
     },
@@ -148,6 +185,9 @@ export const routeTree = rootRoute
     },
     "/groups/": {
       "filePath": "groups/index.tsx"
+    },
+    "/groups/$groupId/information-hub": {
+      "filePath": "groups/$groupId/information-hub.tsx"
     },
     "/groups/$groupId/messages": {
       "filePath": "groups/$groupId/messages.tsx"

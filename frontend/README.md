@@ -6,13 +6,14 @@ This template provides a minimal setup to get React working in Vite with HMR and
 
 API Endpoint: https://67c79ebcc19eb8753e7a2f85.mockapi.io/api/v1
 
-| Endpoint                | Resource |
-|-------------------------|----------|
-| GET /users              | User[]   |
-| GET /user               | User     |
-| POST /users/{userId}    | User     |
-| PUT /users/{userId}     | User     |
-| DELETE /users/${userId} | User     |
+| Endpoint                   | Description                     | Resource |
+|----------------------------|---------------------------------|----------|
+| GET /users                 | Get a list of users             | User[]   |
+| GET /user/{userId}         | Get a user by ID                | User     |
+| POST /users                | Create a new group              | User     |
+| PUT /users/{userId}        | Update a group                  | User     |
+| DELETE /users/${userId}    | Delete a group                  | User     |
+| GET /users/{userId}/groups | Get a list of groups for a user | Group[]  |
 
 
 Example Data: https://67c79ebcc19eb8753e7a2f85.mockapi.io/api/v1/users
@@ -42,13 +43,13 @@ Example Data: https://67c79ebcc19eb8753e7a2f85.mockapi.io/api/v1/users
 ]
 ```
 
-| Endpoint                  | Resource |
-|--------------------------_|----------|
-| GET /groups               | Group[]  |
-| GET /group                | Group    |
-| POST /groups/{groupId}    | Group    |
-| PUT /groups/{groupId}     | Group    |
-| DELETE /groups/${groupId} | Group    |
+| Endpoint                  | Description          | Resource |
+|---------------------------|----------------------|----------|
+| GET /groups               | Get a list of groups | Group[]  |
+| GET /group{groupId}       | Get a group by ID    | Group    |
+| POST /groups              | Create a new group   | Group    |
+| PUT /groups/{groupId}     | Update a group       | Group    |
+| DELETE /groups/${groupId} | Delete a group       | Group    |
 
 Example Data: https://67c79ebcc19eb8753e7a2f85.mockapi.io/api/v1/groups
 

@@ -1,18 +1,25 @@
 import { useTheme } from "@/components/theme-provider";
-import IconTooltip from "@/components/icon-tooltip";
 import { SunMoon, MoonStar } from "lucide-react";
+import { Button } from "./ui/button";
+import IconTooltip from "@/components/icon-tooltip";
 
 export default function ThemeToggle() {
   const { theme, setTheme } = useTheme();
 
   return (
     <IconTooltip label="Toggle Theme">
-      <span
-        className="hover:bg-sidebar-accent p-2 rounded-lg cursor-pointer"
+      <Button
+        variant="ghost"
+        size="icon"
+        className="cursor-pointer"
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       >
-        {theme === "dark" ? <SunMoon /> : <MoonStar />}
-      </span>
+        {theme === "dark" ? (
+          <SunMoon className="size-6" />
+        ) : (
+          <MoonStar className="size-6" />
+        )}
+      </Button>
     </IconTooltip>
   );
 }

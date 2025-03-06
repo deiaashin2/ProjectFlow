@@ -7,11 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Ellipsis, Pencil, Smile, Forward, ArrowRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import IconTooltip from "@/components/icon-tooltip";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import useMessages from "@/hooks/useMessages";
 import {
   Breadcrumb,
@@ -20,13 +16,12 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import githubLogoLight from "@/assets/github-mark-white.png";
-import githubLogoDark from "@/assets/github-mark.png";
 import { useInView } from "react-intersection-observer";
 import { ErrorBoundary } from "react-error-boundary";
 import UsersList from "@/features/messages/users-list";
 import ThemeToggle from "@/components/theme-toggle";
-import { useTheme } from "@/components/theme-provider";
+import CustomTrigger from "@/components/custom-trigger";
+import GithubLinkButton from "@/components/github-link-button";
 
 export const Route = createFileRoute("/groups/$groupId/messages")({
   component: MessagePage,
@@ -34,7 +29,6 @@ export const Route = createFileRoute("/groups/$groupId/messages")({
 
 function MessagePage() {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { theme } = useTheme();
 
   // Automatically scroll into view on page load`
   useEffect(() => {
@@ -56,29 +50,13 @@ function MessagePage() {
         {/* Header */}
         <header className=" sticky top-0 flex shrink-0 gap-4 border-b dark:bg-sidebar">
           <div className="flex items-center gap-2 flex-grow p-4 ">
-            <SidebarTrigger className="ml-1" />
+            <CustomTrigger />
             <Separator orientation="vertical" className="mr-2" />
             <MessageBreadcrumb />
           </div>
           <div className="flex items-center">
             <ThemeToggle />
-
-            <IconTooltip label="Visit Project on Github">
-              <span className="hover:bg-sidebar-accent p-1 rounded-lg cursor-pointer">
-                <Avatar className="flex items-center justify-center">
-                  <a
-                    href="https://github.com/deiaashin2/ProjectFlow"
-                    target="_blank"
-                  >
-                    <AvatarImage
-                      src={theme === "dark" ? githubLogoLight : githubLogoDark}
-                      className="size-6"
-                      alt="Logo of GitHub"
-                    />
-                  </a>
-                </Avatar>
-              </span>
-            </IconTooltip>
+            <GithubLinkButton />
           </div>
           <div className="hidden lg:flex items-center min-w-56 lg:min-w-64 border-l bg-sidebar pl-2 ">
             <h3 className="text-2xl font-semibold">Users</h3>

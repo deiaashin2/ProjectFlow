@@ -2,9 +2,11 @@
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-### MockApi Endpoints
+## MockApi Endpoints
 
-API Endpoint: https://67c79ebcc19eb8753e7a2f85.mockapi.io/api/v1
+API Endpoint Base URL: https://67c79ebcc19eb8753e7a2f85.mockapi.io/api/v1
+
+### User Endpoints
 
 | Endpoint                   | Description                     | Resource |
 |----------------------------|---------------------------------|----------|
@@ -12,7 +14,7 @@ API Endpoint: https://67c79ebcc19eb8753e7a2f85.mockapi.io/api/v1
 | GET /user/{userId}         | Get a user by ID                | User     |
 | POST /users                | Create a new group              | User     |
 | PUT /users/{userId}        | Update a group                  | User     |
-| DELETE /users/${userId}    | Delete a group                  | User     |
+| DELETE /users/{userId}     | Delete a group                  | User     |
 | GET /users/{userId}/groups | Get a list of groups for a user | Group[]  |
 
 
@@ -43,13 +45,15 @@ Example Data: https://67c79ebcc19eb8753e7a2f85.mockapi.io/api/v1/users
 ]
 ```
 
+### Group Endpoints
+
 | Endpoint                  | Description          | Resource |
 |---------------------------|----------------------|----------|
 | GET /groups               | Get a list of groups | Group[]  |
 | GET /group{groupId}       | Get a group by ID    | Group    |
 | POST /groups              | Create a new group   | Group    |
 | PUT /groups/{groupId}     | Update a group       | Group    |
-| DELETE /groups/${groupId} | Delete a group       | Group    |
+| DELETE /groups/{groupId}  | Delete a group       | Group    |
 
 Example Data: https://67c79ebcc19eb8753e7a2f85.mockapi.io/api/v1/groups
 

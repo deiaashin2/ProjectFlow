@@ -1,9 +1,11 @@
-import { usersData } from "@/lib/mock-data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User } from "@/lib/mock-data";
+import useUsers from "@/hooks/useUsers";
 
 function UsersList() {
+  const { data: usersData } = useUsers();
   const groupedUsers: Record<string, User[]> = {};
+
   for (const user of usersData) {
     const key = user.online ? user.role : "Offline";
 
@@ -41,11 +43,14 @@ function UserGroup({ usersData, role }: { usersData: User[]; role?: string }) {
 }
 
 function UserItem({ username, avatar }: { username: string; avatar: string }) {
+  const randomNumber = Math.floor(Math.random() * 200);
   return (
     <div className="flex items-center gap-2 hover:bg-sidebar-accent p-1 rounded-sm">
       <Avatar className="size-8 text-xs">
-        <AvatarImage src={avatar} />
-        <AvatarFallback className="bg-sidebar-border">{avatar}</AvatarFallback>
+        <AvatarImage src={`${avatar}?random=${randomNumber}`} />
+        <AvatarFallback className="bg-sidebar-border">
+          {username[0]}
+        </AvatarFallback>
       </Avatar>
       <span className="text-sm font-medium">{username}</span>
     </div>

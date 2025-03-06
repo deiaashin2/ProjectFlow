@@ -84,7 +84,9 @@ function MessagePage() {
 
           {/* User Sidebar */}
           <div className="hidden lg:flex min-w-56 lg:min-w-64 p-2 border-l bg-sidebar">
-            <UsersList />
+            <Suspense fallback={<p>Loading...</p>}>
+              <UsersList />
+            </Suspense>
           </div>
         </div>
       </SidebarInset>

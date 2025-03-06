@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Suspense } from "react";
+import CreateGroup from "@/components/create-group";
 
 export const Route = createFileRoute("/groups/")({
   component: RouteComponent,
@@ -25,13 +26,7 @@ function RouteComponent() {
       <main className="flex flex-col mx-auto w-full max-w-7xl gap-6 p-2">
         <div className="flex items-center justify-between pt-6">
           <h1 className="text-2xl font-bold">Your Groups</h1>
-          <Button
-            className="bg-indigo-500 hover:bg-indigo-500 hover:opacity-85 cursor-pointer dark:text-foreground text-base"
-            size="lg"
-          >
-            <CirclePlus />
-            Create Group
-          </Button>
+          <CreateGroup />
         </div>
 
         <Suspense fallback={<p>Loading...</p>}>

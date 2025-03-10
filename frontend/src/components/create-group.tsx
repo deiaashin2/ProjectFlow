@@ -51,7 +51,7 @@ function CreateGroup() {
           Create Group
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Create Group</DialogTitle>
           <DialogDescription>Customize your group.</DialogDescription>
@@ -61,9 +61,14 @@ function CreateGroup() {
             <Label htmlFor="groupName">Group Name</Label>
             <Input type="text" id="groupName" name="groupName" required />
           </div>
-          <div>
+          <div className="flex flex-col ">
             <Label htmlFor="groupDescription">Group Description</Label>
-            <Textarea id="groupDescription" name="groupDescription" required />
+            <Textarea
+              className="max-w-[415px] sm:max-w-[460px]"
+              id="groupDescription"
+              name="groupDescription"
+              required
+            />
           </div>
           <div>
             <Label>Invite users</Label>

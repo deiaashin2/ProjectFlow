@@ -91,7 +91,9 @@ function GroupCard({ group }: { group: Group }) {
       />
       <CardHeader>
         <CardTitle className="text-xl">{group.name}</CardTitle>
-        <CardDescription>{group.description}</CardDescription>
+        <CardDescription className="line-clamp-2 break-words text-ellipsis min-h-10">
+          {group.description}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex items-center gap-2">

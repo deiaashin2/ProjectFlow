@@ -16,7 +16,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
-import { CirclePlus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -28,7 +28,7 @@ function CreateGroup() {
           className="bg-indigo-500 hover:bg-indigo-500 hover:opacity-85 cursor-pointer dark:text-foreground text-base"
           size="lg"
         >
-          <CirclePlus />
+          <Plus />
           Create Group
         </Button>
       </DialogTrigger>

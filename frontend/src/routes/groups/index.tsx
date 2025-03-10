@@ -55,7 +55,7 @@ function GroupsPage() {
 
 function GroupHeader() {
   return (
-    <header className="sticky top-0 p-4 items-center border-b shadow-sm bg-background">
+    <header className="sticky top-0 z-10 p-4 items-center border-b shadow-sm bg-background">
       <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
         <h1 className="font-bold text-2xl">
           <Link to="/">Project Flow</Link>

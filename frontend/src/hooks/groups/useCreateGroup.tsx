@@ -11,7 +11,7 @@ async function createGroup(data: {
     body: JSON.stringify({
       ...data,
       members: Math.floor(Math.random() * 100),
-      banner: "https://loremflickr.com/640/480/abstract",
+      banner: "https://picsum.photos/640/480",
     }),
     headers: { "content-type": "application/json" },
   });

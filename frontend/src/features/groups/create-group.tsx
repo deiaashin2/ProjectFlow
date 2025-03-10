@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-function CreateGroup() {
+function CreateGroupMenu() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const createGroupMutation = useCreateGroup();
 
@@ -44,7 +44,7 @@ function CreateGroup() {
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <Button
-          className="bg-indigo-500 hover:bg-indigo-500 hover:opacity-85 cursor-pointer dark:text-foreground text-base"
+          className="bg-blue-600 hover:bg-blue-500 dark:text-foreground cursor-pointer text-base"
           size="lg"
         >
           <Plus />
@@ -102,4 +102,4 @@ function CreateGroup() {
   );
 }
 
-export default CreateGroup;
+export default CreateGroupMenu;

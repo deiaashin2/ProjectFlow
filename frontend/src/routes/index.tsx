@@ -35,6 +35,13 @@ function Index() {
         >
           Messages
         </Link>
+        <Link
+          to="/groups/$groupId/task-management"
+          params={{ groupId: "1" }}
+          className="[&.active]:font-bold text-blue-600"
+        >
+          Task Management
+        </Link>
         <ThemeToggle />
       </div>
 

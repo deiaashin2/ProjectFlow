@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { API_BASE_URL } from "@/lib/constants";
 
-type Group = {
+export type Group = {
   id: string;
   userId: string;
   name: string;

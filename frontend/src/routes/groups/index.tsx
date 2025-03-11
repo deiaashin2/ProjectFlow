@@ -11,9 +11,9 @@ export const Route = createFileRoute("/groups/")({
 
 function GroupsPage() {
   return (
-    <div className="min-h-screen flex flex-col gap-6 bg-accent">
+    <div className="min-h-screen flex flex-col">
       <GroupHeader />
-      <main className="flex flex-col flex-grow mx-auto w-full max-w-7xl gap-6 p-2">
+      <main className="flex flex-col flex-grow mx-auto w-full max-w-7xl gap-6 p-4 lg:border-x border-dashed">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <NotebookPen className="size-6 shrink-0" />

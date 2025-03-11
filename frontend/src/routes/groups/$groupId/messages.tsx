@@ -41,7 +41,7 @@ function MessagePage() {
     <SidebarProvider
       style={
         {
-          "--sidebar-width": "325px",
+          "--sidebar-width": "300px",
         } as React.CSSProperties
       }
     >

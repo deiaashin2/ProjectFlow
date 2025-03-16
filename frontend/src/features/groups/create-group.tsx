@@ -43,13 +43,9 @@ function CreateGroupMenu() {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button
-          className="bg-blue-600 hover:bg-blue-500 dark:text-foreground cursor-pointer text-base"
-          size="lg"
-        >
-          <Plus />
-          Create Group
-        </Button>
+        <div className="text-background flex aspect-square size-8 items-center justify-center transition-all duration-300 ease-in-out rounded-lg bg-blue-600 cursor-pointer">
+          <Plus className="size-5.5" />
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>

@@ -30,7 +30,7 @@ function GroupCard({ group }: { group: Group }) {
       <GroupActionMenu group={group} />
       <img
         src={`${group.banner}?random=${group.id}`}
-        className="h-52 object-cover rounded-t-xl"
+        className="h-44 object-cover rounded-t-xl"
         alt={`${group.name} banner`}
       />
       <CardHeader>

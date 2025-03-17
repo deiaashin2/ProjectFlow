@@ -8,6 +8,13 @@ import {
   Squirrel,
   ChevronDown,
   Hash,
+  ChevronsUpDown,
+  Settings,
+  FolderPlus,
+  CirclePlus,
+  MessageCircle,
+  CalendarCheck,
+  LayoutDashboard,
 } from "lucide-react";
 import { NavUser } from "./nav-user";
 import {
@@ -29,6 +36,14 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./ui/collapsible";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { Link } from "@tanstack/react-router";
 
 const user = {
   name: "shadcn",
@@ -44,33 +59,21 @@ const channels = [
 
 const navMain = [
   {
-    title: "Bird",
-    url: "#",
-    icon: Bird,
-    isActive: true,
-  },
-  {
-    title: "Drafts",
-    url: "#",
-    icon: Rabbit,
+    title: "Information Hub",
+    url: "/groups/1/information-hub",
+    icon: LayoutDashboard,
     isActive: false,
   },
   {
-    title: "Sent",
-    url: "#",
-    icon: Snail,
+    title: "Tasks",
+    url: "/groups/1/task-management",
+    icon: CalendarCheck,
     isActive: false,
   },
   {
-    title: "Junk",
-    url: "#",
-    icon: Turtle,
-    isActive: false,
-  },
-  {
-    title: "Trash",
-    url: "#",
-    icon: Squirrel,
+    title: "Messages",
+    url: "/groups/1/messages",
+    icon: MessageCircle,
     isActive: false,
   },
 ];
@@ -95,7 +98,7 @@ export function MessageSidebar({
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton size="lg" asChild className="md:h-8 md:p-0">
-                <a href="#">
+                <a href="/groups">
                   <div className="bg-blue-700 text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                     <Command className="size-4" />
                   </div>
@@ -116,24 +119,26 @@ export function MessageSidebar({
               <SidebarMenu>
                 {navMain.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      tooltip={{
-                        children: item.title,
-                        hidden: false,
-                      }}
-                      onClick={() => {
-                        setActiveItem(item);
-                        setOpen(true);
-                      }}
-                      isActive={activeItem.title === item.title}
-                      size="lg"
-                      className="md:h-8 md:p-0"
-                    >
-                      <div className="bg-sidebar-border text-sidebar-primary flex aspect-square size-8 items-center justify-center rounded-lg cursor-pointer hover:opacity-55 ">
-                        <item.icon className="size-4 dark:text-primary" />
-                      </div>
-                      <span>{item.title}</span>
-                    </SidebarMenuButton>
+                    <Link to={item.url}>
+                      <SidebarMenuButton
+                        tooltip={{
+                          children: item.title,
+                          hidden: false,
+                        }}
+                        onClick={() => {
+                          setActiveItem(item);
+                          setOpen(true);
+                        }}
+                        isActive={activeItem.title === item.title}
+                        size="lg"
+                        className="md:h-8 md:p-0"
+                      >
+                        <div className="bg-sidebar-border text-sidebar-primary flex aspect-square size-8 items-center justify-center rounded-lg cursor-pointer hover:opacity-55 ">
+                          <item.icon className="size-4 dark:text-primary" />
+                        </div>
+                        <span>{item.title}</span>
+                      </SidebarMenuButton>
+                    </Link>
                   </SidebarMenuItem>
                 ))}
               </SidebarMenu>
@@ -148,8 +153,30 @@ export function MessageSidebar({
       </Sidebar>
 
       <Sidebar collapsible="none" className="hidden flex-1 md:flex">
-        <SidebarHeader className="gap-3.5 border-b p-4">
-          <h2 className="font-bold text-lg">Project Flow</h2>
+        <SidebarHeader className="gap-3.5 border-b">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="flex items-center justify-between p-2 hover:bg-sidebar-accent rounded-lg cursor-pointer">
+                <h2 className="font-semibold text-lg">Project Flow</h2>
+                <ChevronsUpDown className="size-4.5" />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-60">
+              <DropdownMenuItem>
+                <FolderPlus />
+                Create Category
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <CirclePlus />
+                Create Channel
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Settings />
+                Settings
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </SidebarHeader>
         <SidebarContent>
           {channels.map((channel) => (

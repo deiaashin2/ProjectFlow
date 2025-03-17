@@ -4,7 +4,15 @@ import { MessageSidebar } from "@/components/messages-sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
-import { Ellipsis, Pencil, Smile, Forward, ArrowRight } from "lucide-react";
+import {
+  Ellipsis,
+  Pencil,
+  Smile,
+  Forward,
+  ArrowRight,
+  SendHorizonal,
+  Paperclip,
+} from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import IconTooltip from "@/components/icon-tooltip";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
@@ -22,6 +30,7 @@ import UsersList from "@/features/messages/users-list";
 import ThemeToggle from "@/components/theme-toggle";
 import CustomTrigger from "@/components/custom-trigger";
 import GithubLinkButton from "@/components/github-link-button";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/groups/$groupId/messages")({
   component: MessagePage,
@@ -42,6 +51,7 @@ function MessagePage() {
       style={
         {
           "--sidebar-width": "300px",
+          fontFamily: "Manrope",
         } as React.CSSProperties
       }
     >
@@ -74,11 +84,19 @@ function MessagePage() {
               </ErrorBoundary>
             </div>
 
-            <div className="px-4 pb-6 mt-6 ">
+            <div className="flex items-center gap-2 relative px-4 my-6">
+              <IconTooltip label="Upload a File">
+                <Paperclip className="absolute left-6 top-2 hover:opacity-75 cursor-pointer" />
+              </IconTooltip>
               <Textarea
                 placeholder="Type your message here."
-                className="resize-none "
+                className="resize-none min-h-10 max-h-20 px-10"
               />
+              <IconTooltip label="Send Messeage">
+                <Button className="cursor-pointer">
+                  <SendHorizonal />
+                </Button>
+              </IconTooltip>
             </div>
           </div>
 
@@ -140,7 +158,10 @@ function MessageList() {
       {data.pages.map((page, index) => (
         <React.Fragment key={index}>
           {page.data.map((message, index) => (
-            <div className="flex gap-4 hover:bg-accent py-4 px-6" key={index}>
+            <div
+              className="group flex gap-4 hover:bg-accent py-4 px-6"
+              key={index}
+            >
               <div className="py-1.5">
                 <Avatar className="size-9 text-sm">
                   <AvatarImage src={message.avatar} />
@@ -155,7 +176,7 @@ function MessageList() {
                       {message.timestamp}
                     </span>
                   </div>
-                  <div className="flex items-center border">
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center border">
                     <MessageActions />
                   </div>
                 </div>

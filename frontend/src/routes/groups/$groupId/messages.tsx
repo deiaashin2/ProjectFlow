@@ -39,7 +39,7 @@ export const Route = createFileRoute("/groups/$groupId/messages")({
 function MessagePage() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Automatically scroll into view on page load`
+  // Automatically scroll into view on page load
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;

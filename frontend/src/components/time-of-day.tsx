@@ -49,7 +49,7 @@ function TimeOfDayHeader({
         alt={alt}
         {...props}
       />
-      <span className="text-2xl font-semibold">{title}</span>
+      <span className="text-2xl font-semibold">{title}, User</span>
     </div>
   );
 }

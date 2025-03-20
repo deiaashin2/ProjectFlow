@@ -1,10 +1,11 @@
 import * as React from "react";
 import {
   PanelLeftOpen,
-  Plus,
   PanelRightOpen,
   Search,
   Bell,
+  Command,
+  Home,
 } from "lucide-react";
 import { NavUser } from "@/components/nav-user";
 import {
@@ -19,7 +20,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import CreateGroupMenu from "./create-group";
+import { Link } from "@tanstack/react-router";
 
 const user = {
   name: "shadcn",
@@ -47,6 +48,12 @@ export default function GroupSidebar({
       action: toggleSidebar,
     },
     {
+      title: "Home",
+      url: "/",
+      icon: Home,
+      isActive: false,
+    },
+    {
       title: "Search",
       url: "#",
       icon: Search,
@@ -59,15 +66,15 @@ export default function GroupSidebar({
       isActive: false,
     },
   ];
-  const [activeItem, setActiveItem] = React.useState(navMain[0]);
-  const { setOpen, isMobile } = useSidebar();
+  const [activeItem, setActiveItem] = React.useState(navMain[1]);
+  const { setOpen } = useSidebar();
 
-  const sidebarWidth = isCollapsed ? "1px" : "180px";
+  const sidebarWidth = isCollapsed ? "1px" : "200px";
 
   return (
     <Sidebar
       collapsible="icon"
-      className="overflow-hidden *:data-[sidebar=sidebar]:flex-row "
+      className="overflow-hidden *:data-[sidebar=sidebar]:flex-row"
       {...props}
     >
       <Sidebar
@@ -78,9 +85,14 @@ export default function GroupSidebar({
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton size="lg" asChild className="md:h-8 md:p-0">
-                <div>
-                  <CreateGroupMenu />
-                </div>
+                <Link to="/">
+                  <div className="bg-blue-700 text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                    <Command className="size-4" />
+                  </div>
+                  <div className="grid flex-1 text-left text-base leading-tight">
+                    <span className="truncate font-semibold">Project Flow</span>
+                  </div>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -115,11 +127,6 @@ export default function GroupSidebar({
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
-        {isMobile && (
-          <SidebarFooter>
-            <NavUser user={user} />
-          </SidebarFooter>
-        )}
       </Sidebar>
     </Sidebar>
   );

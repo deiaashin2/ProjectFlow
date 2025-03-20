@@ -1,11 +1,6 @@
 import * as React from "react";
 import {
-  Bird,
   Command,
-  Rabbit,
-  Snail,
-  Turtle,
-  Squirrel,
   ChevronDown,
   Hash,
   ChevronsUpDown,
@@ -15,6 +10,7 @@ import {
   MessageCircle,
   CalendarCheck,
   LayoutDashboard,
+  Home,
 } from "lucide-react";
 import { NavUser } from "./nav-user";
 import {
@@ -43,7 +39,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 
 const user = {
   name: "shadcn",
@@ -58,6 +54,12 @@ const channels = [
 ];
 
 const navMain = [
+  {
+    title: "Home",
+    url: "/",
+    icon: Home,
+    isActive: false,
+  },
   {
     title: "Information Hub",
     url: "/groups/1/information-hub",
@@ -81,13 +83,18 @@ const navMain = [
 export function MessageSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
-  const [activeItem, setActiveItem] = React.useState(navMain[0]);
+  const { pathname } = useLocation();
+  let location = "Information Hub";
+
+  if (pathname.includes("messages")) location = "Message";
+  if (pathname.includes("task")) location = "Tasks";
+  const [activeItem, setActiveItem] = React.useState(location);
   const { setOpen, isMobile } = useSidebar();
 
   return (
     <Sidebar
       collapsible="icon"
-      className="overflow-hidden *:data-[sidebar=sidebar]:flex-row "
+      className="overflow-hidden *:data-[sidebar=sidebar]:flex-row h-dvh"
       {...props}
     >
       <Sidebar
@@ -126,10 +133,10 @@ export function MessageSidebar({
                           hidden: false,
                         }}
                         onClick={() => {
-                          setActiveItem(item);
+                          setActiveItem(item.title);
                           setOpen(true);
                         }}
-                        isActive={activeItem.title === item.title}
+                        isActive={activeItem === item.title}
                         size="lg"
                         className="md:h-8 md:p-0"
                       >
@@ -206,7 +213,6 @@ export function MessageSidebar({
                             asChild
                           >
                             <span className="font-medium">
-                              {" "}
                               <Hash /> {subChannel}
                             </span>
                           </SidebarMenuButton>

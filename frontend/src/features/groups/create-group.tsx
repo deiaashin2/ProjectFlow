@@ -8,20 +8,12 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogClose,
 } from "@/components/ui/dialog";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 
 function CreateGroupMenu() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -43,13 +35,14 @@ function CreateGroupMenu() {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <div className="text-background flex aspect-square size-8 items-center justify-center transition-all duration-300 ease-in-out rounded-lg bg-blue-600 cursor-pointer">
-          <Plus className="size-5.5" />
-        </div>
+        <Button className="cursor-pointer" size="lg">
+          <Plus className="size-5" />
+          Create Group
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Create Group</DialogTitle>
+          <DialogTitle>New Group</DialogTitle>
           <DialogDescription>Customize your group.</DialogDescription>
         </DialogHeader>
         <form action={handleSubmit} className="flex flex-col gap-4">
@@ -57,37 +50,14 @@ function CreateGroupMenu() {
             <Label htmlFor="groupName">Group Name</Label>
             <Input type="text" id="groupName" name="groupName" required />
           </div>
-          <div className="flex flex-col ">
-            <Label htmlFor="groupDescription">Group Description</Label>
-            <Textarea
-              className="max-w-[415px] sm:max-w-[460px]"
-              id="groupDescription"
-              name="groupDescription"
-              required
-            />
-          </div>
-          <div>
-            <Label>Invite users</Label>
-            <Command className="rounded-lg border shadow-md h-44">
-              <CommandInput placeholder="Search for users..." />
-
-              <CommandList>
-                <CommandEmpty>No results found.</CommandEmpty>
-                <CommandGroup heading="Users">
-                  <CommandItem>Username1</CommandItem>
-                  <CommandItem>Username2</CommandItem>
-                  <CommandItem>Username3</CommandItem>
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </div>
-
-          <div>
-            <Label htmlFor="banner">Choose a banner</Label>
-            <Input type="file" id="banner" name="banner" />
-          </div>
 
           <DialogFooter className="pt-2">
+            <DialogClose>
+              <Button type="button" variant="ghost">
+                Cancel
+              </Button>
+            </DialogClose>
+
             <Button type="submit" disabled={createGroupMutation.isPending}>
               {createGroupMutation.isPending ? "Submitting..." : "Create"}
             </Button>

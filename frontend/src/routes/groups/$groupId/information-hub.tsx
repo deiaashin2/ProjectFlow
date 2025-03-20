@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { InformationHubSidebar } from "@/components/info-hub-sidebar";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -25,6 +24,8 @@ import githubLogoLight from "@/assets/github-mark-white.png";
 import githubLogoDark from "@/assets/github-mark.png";
 import ThemeToggle from "@/components/theme-toggle";
 import { useTheme } from "@/components/theme-provider";
+import AppSidebar from "@/components/app-sidebar";
+import CustomTrigger from "@/components/custom-trigger";
 
 export const Route = createFileRoute("/groups/$groupId/information-hub")({
   component: MessagePage,
@@ -50,14 +51,17 @@ function MessagePage() {
     <SidebarProvider
       style={
         {
-          "--sidebar-width": "48px",
+          "--sidebar-width": "275px",
         } as React.CSSProperties
       }
     >
-      <InformationHubSidebar />
+      <AppSidebar />
+
       <SidebarInset>
         <header className=" sticky top-0 flex shrink-0 gap-4 border-b dark:bg-sidebar">
           <div className="flex items-center gap-2 flex-grow p-4 ">
+            <CustomTrigger />
+            <Separator orientation="vertical" className="mr-2" />
             <MessageBreadcrumb />
           </div>
           <div className="flex items-center pr-2">

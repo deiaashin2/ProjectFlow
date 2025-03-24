@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -26,6 +26,7 @@ import ThemeToggle from "@/components/theme-toggle";
 import { useTheme } from "@/components/theme-provider";
 import AppSidebar from "@/components/app-sidebar";
 import CustomTrigger from "@/components/custom-trigger";
+import useGroups, { Group } from "@/hooks/groups/useGroups";
 
 export const Route = createFileRoute("/groups/$groupId/information-hub")({
   component: MessagePage,
@@ -41,11 +42,6 @@ function MessagePage() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, []);
-
-  let mockData = {
-    groupName: "ProjectFlow",
-    groupDescription: "A group for members working on ProjectFlow.",
-  };
 
   return (
     <SidebarProvider
@@ -86,17 +82,22 @@ function MessagePage() {
             </IconTooltip>
           </div>
         </header>
-        <InformationHub {...mockData} />
+        <InformationHub />
       </SidebarInset>
     </SidebarProvider>
   );
 }
 
 function MessageBreadcrumb() {
+  const params = useParams({ from: "/groups/$groupId/information-hub" });
+
   const navItems = [
     { title: "Home", url: "/" },
     { title: "Groups", url: "/groups" },
-    { title: "Information Hub", url: "/groups/1/information-hub" },
+    {
+      title: "Information Hub",
+      url: "/groups/" + params.groupId + "/information-hub",
+    },
   ];
   return (
     <Breadcrumb>
@@ -122,16 +123,39 @@ function MessageBreadcrumb() {
   );
 }
 
-function InformationHub(props) {
+function InformationHub() {
+  const { data, isPending, isError } = useGroups("");
+  const params = useParams({ from: "/groups/$groupId/information-hub" });
+
+  if (isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error</div>;
+  }
+
+  let currentGroup = data.find((group) => {
+    return group.id == params.groupId;
+  });
+
+  if (currentGroup === undefined) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="text-center text-lg">Group not found. </div>
+      </div>
+    );
+  }
+
   return (
     <section className="py-32 flex justify-center">
       <section className="container">
         <header className="mb-24 flex flex-col items-center gap-6">
           <h1 className="text-center text-3xl font-semibold lg:max-w-3xl lg:text-5xl">
-            {props.groupName} Information Hub
+            <span className="font-bold">{currentGroup?.name} </span>
           </h1>
           <p className="text-center text-lg font-medium text-muted-foreground md:max-w-4xl lg:text-xl">
-            {props.groupDescription}
+            {currentGroup?.description}
           </p>
         </header>
         <section className="relative flex justify-center">
@@ -175,11 +199,6 @@ function InformationHub(props) {
                 <div className="flex grow justify-center items-center">
                   <p className="text-muted-foreground">No new reminders.</p>
                 </div>
-                {/* <img
-                  src={feature1.image}
-                  alt={feature1.title}
-                  className="mt-8 aspect-[1.5] h-full w-full object-cover lg:aspect-[2.4]"
-                  /> */}
               </div>
             </section>
             <section className="relative flex flex-col border-t border-solid border-muted2 lg:flex-row">
@@ -193,21 +212,12 @@ function InformationHub(props) {
                     Let me pencil you in for next week.
                   </h3>
                 </section>
-                <p className="mb-4">
-                  <span className="font-bold">17 March 2025</span>
-                  <Separator />
-                  Midterm
-                </p>
-                <p>
-                  <span className="font-bold">26 April 2025</span>
-                  <Separator />
-                  Pizza Party
-                </p>
-                {/* <img
-                  src={feature1.image}
-                  alt={feature1.title}
-                  className="mt-8 aspect-[1.5] h-full w-full object-cover lg:aspect-[2.4]"
-                /> */}
+                <span className="font-bold">17 March 2025</span>
+                <Separator />
+                <p className="mb-4">Midterm</p>
+                <span className="font-bold">26 April 2025</span>
+                <Separator />
+                <p>Pizza Party</p>
               </div>
               <div className="flex flex-col border-b border-solid border-muted2 p-10 lg:w-3/5 lg:border-b-0 lg:border-r">
                 <section className="flex items-end justify-between border-b pb-1 mb-1">
@@ -225,11 +235,6 @@ function InformationHub(props) {
                   </p>
                   <ChevronDown />
                 </div>
-                {/* <img
-                  src={feature1.image}
-                  alt={feature1.title}
-                  className="mt-8 aspect-[1.5] h-full w-full object-cover lg:aspect-[2.4]"
-                /> */}
               </div>
             </section>
           </div>

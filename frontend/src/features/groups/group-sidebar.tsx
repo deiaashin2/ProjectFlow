@@ -7,11 +7,9 @@ import {
   Command,
   Home,
 } from "lucide-react";
-import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -21,12 +19,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Link } from "@tanstack/react-router";
-
-const user = {
-  name: "shadcn",
-  email: "m@example.com",
-  avatar: "/avatars/shadcn.jpg",
-};
 
 type Props = {
   isCollapsed: boolean;
@@ -84,14 +76,12 @@ export default function GroupSidebar({
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton size="lg" asChild className="md:h-8 md:p-0">
+              <SidebarMenuButton size="lg" asChild className={`md:h-8  md:p-0`}>
                 <Link to="/">
                   <div className="bg-blue-700 text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                     <Command className="size-4" />
                   </div>
-                  <div className="grid flex-1 text-left text-base leading-tight">
-                    <span className="truncate font-semibold">Project Flow</span>
-                  </div>
+                  <span className="font-semibold text-lg">Project Flow</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

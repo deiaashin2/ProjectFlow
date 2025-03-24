@@ -54,6 +54,7 @@ function MessagePage() {
           "--sidebar-width": "275px",
         } as React.CSSProperties
       }
+      defaultOpen={false}
     >
       <AppSidebar />
 

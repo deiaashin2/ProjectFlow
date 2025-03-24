@@ -20,8 +20,6 @@ function CreateGroupMenu() {
   const createGroupMutation = useCreateGroup();
 
   function handleSubmit(formData: FormData) {
-    console.log("Form Submitted");
-
     const name = formData.get("groupName") as string;
     const description = formData.get("groupDescription") as string;
     const banner = formData.get("banner") as File;

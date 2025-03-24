@@ -11,7 +11,6 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as GroupsIndexImport } from './routes/groups/index'
 import { Route as GroupsGroupIdTaskManagementImport } from './routes/groups/$groupId/task-management'
@@ -19,12 +18,6 @@ import { Route as GroupsGroupIdMessagesImport } from './routes/groups/$groupId/m
 import { Route as GroupsGroupIdInformationHubImport } from './routes/groups/$groupId/information-hub'
 
 // Create/Update Routes
-
-const AboutRoute = AboutImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -69,13 +62,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutImport
-      parentRoute: typeof rootRoute
-    }
     '/groups/': {
       id: '/groups/'
       path: '/groups'
@@ -111,7 +97,6 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/groups': typeof GroupsIndexRoute
   '/groups/$groupId/information-hub': typeof GroupsGroupIdInformationHubRoute
   '/groups/$groupId/messages': typeof GroupsGroupIdMessagesRoute
@@ -120,7 +105,6 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/groups': typeof GroupsIndexRoute
   '/groups/$groupId/information-hub': typeof GroupsGroupIdInformationHubRoute
   '/groups/$groupId/messages': typeof GroupsGroupIdMessagesRoute
@@ -130,7 +114,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/groups/': typeof GroupsIndexRoute
   '/groups/$groupId/information-hub': typeof GroupsGroupIdInformationHubRoute
   '/groups/$groupId/messages': typeof GroupsGroupIdMessagesRoute
@@ -141,7 +124,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/about'
     | '/groups'
     | '/groups/$groupId/information-hub'
     | '/groups/$groupId/messages'
@@ -149,7 +131,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/about'
     | '/groups'
     | '/groups/$groupId/information-hub'
     | '/groups/$groupId/messages'
@@ -157,7 +138,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/about'
     | '/groups/'
     | '/groups/$groupId/information-hub'
     | '/groups/$groupId/messages'
@@ -167,7 +147,6 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
   GroupsIndexRoute: typeof GroupsIndexRoute
   GroupsGroupIdInformationHubRoute: typeof GroupsGroupIdInformationHubRoute
   GroupsGroupIdMessagesRoute: typeof GroupsGroupIdMessagesRoute
@@ -176,7 +155,6 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
   GroupsIndexRoute: GroupsIndexRoute,
   GroupsGroupIdInformationHubRoute: GroupsGroupIdInformationHubRoute,
   GroupsGroupIdMessagesRoute: GroupsGroupIdMessagesRoute,
@@ -194,7 +172,6 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/about",
         "/groups/",
         "/groups/$groupId/information-hub",
         "/groups/$groupId/messages",
@@ -203,9 +180,6 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.tsx"
-    },
-    "/about": {
-      "filePath": "about.tsx"
     },
     "/groups/": {
       "filePath": "groups/index.tsx"

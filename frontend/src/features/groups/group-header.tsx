@@ -1,15 +1,45 @@
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import ThemeToggle from "@/components/theme-toggle";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import ThemeToggle from "@/components/theme-toggle";
 
 function GroupHeader() {
+  const { query } = useSearch({ from: "/groups/" });
+  const navigate = useNavigate({ from: "/groups" });
+  const [searchParam, setSearchParam] = useState(query || "");
+
+  // Debouncing search input
+  useEffect(() => {
+    const debounce = setTimeout(() => {
+      navigate({
+        search: (prev) => ({
+          ...prev,
+          query: searchParam || undefined,
+        }),
+        replace: true,
+      });
+    }, 500);
+
+    return () => clearTimeout(debounce);
+  }, [searchParam, navigate]);
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setSearchParam(e.target.value);
+  }
   return (
     <header className="sticky top-0 z-10 items-center bg-background">
       <div className="max-w-7xl mx-auto w-full flex items-center justify-between p-4 ">
         <div className=" relative">
           <Search className="absolute left-2.5 top-2.5 size-4" />
-          <Input className="pl-8 w-72 md:w-80" placeholder="Search groups..." />
+          <Input
+            type="text"
+            value={searchParam}
+            onChange={handleInputChange}
+            className="pl-8 w-72 md:w-80"
+            placeholder="Search groups..."
+          />
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />

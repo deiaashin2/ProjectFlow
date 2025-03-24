@@ -1,14 +1,18 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Suspense, useState } from "react";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import GroupHeader from "@/features/groups/group-header";
 import GroupList from "@/features/groups/group-list";
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import GroupSidebar from "@/features/groups/group-sidebar";
 import TimeOfDayHeader from "@/components/time-of-day";
 import CreateGroupMenu from "@/features/groups/create-group";
+import { z } from "zod";
+
+const groupSearchSchema = z.object({ query: z.string().optional() });
 
 export const Route = createFileRoute("/groups/")({
   component: GroupsPage,
+  validateSearch: groupSearchSchema,
 });
 
 function GroupsPage() {
@@ -29,26 +33,22 @@ function GroupsPage() {
         toggleSidebar={toggleSidebar}
       />
       <SidebarInset>
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen">
           <GroupHeader />
-          <main className="flex flex-col flex-grow mx-auto w-full max-w-7xl gap-6 p-4 ">
-            <div className="flex items-center justify-between mt-2">
-              <div className="flex items-center gap-2">
-                <TimeOfDayHeader />
+          <main className="flex flex-col flex-grow mx-auto w-full max-w-7xl gap-4 p-4 ">
+            <div className="mt-2">
+              <TimeOfDayHeader />
+            </div>
+
+            <div className="flex items-center gap-4 text-lg">
+              <span className="border-b-2 border-purple-400">Your Groups</span>
+              {/* <span>Recent</span> */}
+              <div className="ml-auto">
+                <CreateGroupMenu />
               </div>
             </div>
 
-            <div className="flex items-center justify-between gap-4 text-lg">
-              <div className="flex items-center gap-4">
-                <span className="border-b-3 border-purple-400">Groups</span>
-                <span>Recent</span>
-              </div>
-              <CreateGroupMenu />
-            </div>
-
-            <Suspense fallback={<p>Loading...</p>}>
-              <GroupList />
-            </Suspense>
+            <GroupList />
           </main>
         </div>
       </SidebarInset>

@@ -1,6 +1,6 @@
 import useGroups, { Group } from "@/hooks/groups/useGroups";
 import GroupActionMenu from "./group-actions";
-import { Link } from "@tanstack/react-router";
+import { Link, useSearch } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { UserPlus, Users } from "lucide-react";
 import {
@@ -12,9 +12,23 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-
 export default function GroupList() {
-  const { data } = useGroups();
+  const { query } = useSearch({ from: "/groups/" });
+  const { data, isPending, isError } = useGroups(query);
+
+  if (isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error</div>;
+  }
+
+  if (data.length === 0) {
+    return (
+      <div className="text-center text-lg">No groups match your search. </div>
+    );
+  }
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
       {data.map((group) => (

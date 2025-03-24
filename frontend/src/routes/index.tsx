@@ -15,9 +15,6 @@ function Index() {
         <Link to="/" className="[&.active]:font-bold text-blue-600">
           Home
         </Link>
-        <Link to="/about" className="[&.active]:font-bold text-blue-600">
-          About
-        </Link>
         <Link to="/groups" className="[&.active]:font-bold text-blue-600">
           Groups
         </Link>

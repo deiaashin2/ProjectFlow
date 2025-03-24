@@ -91,40 +91,40 @@ function MessagePage() {
       <AppSidebar />
 
       <SidebarInset>
-        {/* Header */}
-        <header className=" sticky top-0 flex shrink-0 gap-4 border-b dark:bg-sidebar">
-          <div className="flex items-center gap-2 flex-grow p-4 ">
-            <CustomTrigger />
-            <Separator orientation="vertical" className="mr-2" />
-            <MessageBreadcrumb />
-          </div>
-          <div className="flex items-center">
-            <ThemeToggle />
-            <GithubLinkButton />
-          </div>
-        </header>
+      {/* Header */}
+      <header className="sticky top-0 flex shrink-0 gap-4 border-b dark:bg-sidebar">
+        <div className="flex items-center gap-2 flex-grow p-4">
+          <CustomTrigger />
+          <Separator orientation="vertical" className="mr-2" />
+          <MessageBreadcrumb />
+        </div>
+        <div className="flex items-center">
+          <ThemeToggle />
+          <GithubLinkButton />
+        </div>
+      </header>
 
-        {/* Task Layout */}
-        <div className="flex flex-grow h-0 dark:bg-sidebar">
-          <div className="flex flex-col flex-grow px-4 pb-6 mt-6 ">
-            <DataTableDemo />
-          </div>
+      {/* Task Layout */}
+      <div className="flex flex-grow h-screen dark:bg-sidebar">
+        <div className="flex flex-col flex-grow px-4 pb-6 mt-6">
+          {/* Data Table */}
+          <DataTableDemo />
 
-          <div className="px-4 pb-6 mt-6 ">
-            <Textarea
-              placeholder="Type your message here."
-              className="resize-none "
-            />
-            <CardWithForm />
-          </div>
-
-          {/* Calendar Sidebar */}
-          <div className="hidden lg:flex min-w-56 lg:min-w-64 p-2 border-l bg-sidebar">
-            <Suspense fallback={<p>Loading...</p>}>
-              <CalendarDemo />
-            </Suspense>
+          {/* Textarea and CardWithForm */}
+          <div className="flex flex-col gap-4 mt-6 pb-12">
+            <div>
+              <CardWithForm />
+            </div>
           </div>
         </div>
+
+        {/* Calendar Sidebar */}
+        <div className="hidden lg:flex min-w-56 lg:min-w-64 p-2 border-l bg-sidebar h-screen">
+          <div>
+            <CalendarDemo />
+          </div>
+        </div>
+      </div>
       </SidebarInset>
     </SidebarProvider>
   );
@@ -456,29 +456,38 @@ export function CalendarDemo() {
 
 export function CardWithForm() {
   return (
-    <Card className="w-[350px]">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Create project</CardTitle>
-        <CardDescription>Deploy your new project in one-click.</CardDescription>
+        <CardDescription>Create your new project in one-click.</CardDescription>
       </CardHeader>
       <CardContent>
         <form>
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" placeholder="Name of your project" />
+              <Label htmlFor="name">Task Name</Label>
+              <Input id="name" placeholder="Task name of your project" />
             </div>
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="framework">Framework</Label>
+              <Label htmlFor="due-date">Due date</Label>
+              <Input id="due-date" type="date" placeholder="Due date" />
+            </div>
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="task-detail">Task Detail</Label>
+              <Textarea className="w-full h-32 px-4 py-2 resize-y"
+               wrap="soft" id="task_detail" placeholder="Task Details"/>
+            </div>  
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="status">Status</Label>
               <Select>
-                <SelectTrigger id="framework">
+                <SelectTrigger id="status">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent position="popper">
-                  <SelectItem value="next">Next.js</SelectItem>
-                  <SelectItem value="sveltekit">SvelteKit</SelectItem>
-                  <SelectItem value="astro">Astro</SelectItem>
-                  <SelectItem value="nuxt">Nuxt.js</SelectItem>
+                  <SelectItem value="next">Pending</SelectItem>
+                  <SelectItem value="sveltekit">Late</SelectItem>
+                  <SelectItem value="astro">Done</SelectItem>
+                  <SelectItem value="nuxt">Canceled</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -487,7 +496,7 @@ export function CardWithForm() {
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button variant="outline">Cancel</Button>
-        <Button>Deploy</Button>
+        <Button>Create</Button>
       </CardFooter>
     </Card>
   );

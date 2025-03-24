@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useRef } from "react";
+import React, {useEffect, useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Separator } from "@/components/ui/separator";
 import { ArrowRight } from "lucide-react";
@@ -105,7 +105,7 @@ function MessagePage() {
       </header>
 
       {/* Task Layout */}
-      <div className="flex flex-grow h-screen dark:bg-sidebar">
+      <div className="flex flex-grow h-full dark:bg-sidebar">
         <div className="flex flex-col flex-grow px-4 pb-6 mt-6">
           {/* Data Table */}
           <DataTableDemo />
@@ -119,7 +119,7 @@ function MessagePage() {
         </div>
 
         {/* Calendar Sidebar */}
-        <div className="hidden lg:flex min-w-56 lg:min-w-64 p-2 border-l bg-sidebar h-screen">
+        <div className="hidden lg:flex min-w-56 lg:min-w-64 p-2 border-l bg-sidebar h-full">
           <div>
             <CalendarDemo />
           </div>
@@ -286,8 +286,17 @@ export const columns: ColumnDef<Task>[] = [
               Copy Task ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Edit Task</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link
+                to="/groups/$groupId/task-editor"
+                params={{ groupId: "1" }}
+                className="[&.active]:font-bold"
+              >
+                Edit Task
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuItem>View Task Details</DropdownMenuItem>
+            <DropdownMenuItem>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -458,8 +467,8 @@ export function CardWithForm() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Create project</CardTitle>
-        <CardDescription>Create your new project in one-click.</CardDescription>
+        <CardTitle>Create Task</CardTitle>
+        <CardDescription>Create your new task in one-click.</CardDescription>
       </CardHeader>
       <CardContent>
         <form>

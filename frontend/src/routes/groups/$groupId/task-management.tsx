@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useRef } from "react";
+import React, {useEffect, useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Separator } from "@/components/ui/separator";
 import { ArrowRight } from "lucide-react";
@@ -65,6 +65,17 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import AppSidebar from "@/components/app-sidebar";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { useState } from 'react';
 
 export const Route = createFileRoute("/groups/$groupId/task-management")({
   component: MessagePage,
@@ -106,7 +117,7 @@ function MessagePage() {
       </header>
 
       {/* Task Layout */}
-      <div className="flex flex-grow h-screen dark:bg-sidebar">
+      <div className="flex flex-grow h-full dark:bg-sidebar">
         <div className="flex flex-col flex-grow px-4 pb-6 mt-6">
           {/* Data Table */}
           <DataTableDemo />
@@ -120,7 +131,7 @@ function MessagePage() {
         </div>
 
         {/* Calendar Sidebar */}
-        <div className="hidden lg:flex min-w-56 lg:min-w-64 p-2 border-l bg-sidebar h-screen">
+        <div className="hidden lg:flex min-w-56 lg:min-w-64 p-2 border-l bg-sidebar h-full">
           <div>
             <CalendarDemo />
           </div>
@@ -287,8 +298,17 @@ export const columns: ColumnDef<Task>[] = [
               Copy Task ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Edit Task</DropdownMenuItem>
-            <DropdownMenuItem>View Task Details</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link
+                to="/groups/$groupId/task-editor"
+                params={{ groupId: "1" }}
+                className="[&.active]:font-bold"
+              >
+                Edit Task
+              </Link>
+            </DropdownMenuItem>
+              <SheetDemo/>
+            <DropdownMenuItem>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -459,8 +479,8 @@ export function CardWithForm() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Create project</CardTitle>
-        <CardDescription>Create your new project in one-click.</CardDescription>
+        <CardTitle>Create Task</CardTitle>
+        <CardDescription>Create your new task in one-click.</CardDescription>
       </CardHeader>
       <CardContent>
         <form>
@@ -501,4 +521,42 @@ export function CardWithForm() {
       </CardFooter>
     </Card>
   );
+}
+
+export function SheetDemo() {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <SheetTrigger asChild>
+      <DropdownMenuItem onClick={() => setIsOpen(true)}>Task details</DropdownMenuItem>
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Edit profile</SheetTitle>
+          <SheetDescription>
+            Make changes to your profile here. Click save when you're done.
+          </SheetDescription>
+        </SheetHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Name
+            </Label>
+            <Input id="name" value="Pedro Duarte" className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              Username
+            </Label>
+            <Input id="username" value="@peduarte" className="col-span-3" />
+          </div>
+        </div>
+        <SheetFooter>
+          <SheetClose asChild>
+            <Button type="submit" onClick={() => setIsOpen(false)}>Save changes</Button> 
+          </SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  )
 }

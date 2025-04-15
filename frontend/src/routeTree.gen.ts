@@ -16,6 +16,7 @@ import { Route as GroupsIndexImport } from './routes/groups/index'
 import { Route as GroupsGroupIdTaskManagementImport } from './routes/groups/$groupId/task-management'
 import { Route as GroupsGroupIdTaskEditorImport } from './routes/groups/$groupId/task-editor'
 import { Route as GroupsGroupIdMessagesImport } from './routes/groups/$groupId/messages'
+import { Route as GroupsGroupIdLogInImport } from './routes/groups/$groupId/log-in'
 import { Route as GroupsGroupIdInformationHubImport } from './routes/groups/$groupId/information-hub'
 
 // Create/Update Routes
@@ -51,6 +52,12 @@ const GroupsGroupIdMessagesRoute = GroupsGroupIdMessagesImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const GroupsGroupIdLogInRoute = GroupsGroupIdLogInImport.update({
+  id: '/groups/$groupId/log-in',
+  path: '/groups/$groupId/log-in',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const GroupsGroupIdInformationHubRoute =
   GroupsGroupIdInformationHubImport.update({
     id: '/groups/$groupId/information-hub',
@@ -83,6 +90,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GroupsGroupIdInformationHubImport
       parentRoute: typeof rootRoute
     }
+    '/groups/$groupId/log-in': {
+      id: '/groups/$groupId/log-in'
+      path: '/groups/$groupId/log-in'
+      fullPath: '/groups/$groupId/log-in'
+      preLoaderRoute: typeof GroupsGroupIdLogInImport
+      parentRoute: typeof rootRoute
+    }
     '/groups/$groupId/messages': {
       id: '/groups/$groupId/messages'
       path: '/groups/$groupId/messages'
@@ -113,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/groups': typeof GroupsIndexRoute
   '/groups/$groupId/information-hub': typeof GroupsGroupIdInformationHubRoute
+  '/groups/$groupId/log-in': typeof GroupsGroupIdLogInRoute
   '/groups/$groupId/messages': typeof GroupsGroupIdMessagesRoute
   '/groups/$groupId/task-editor': typeof GroupsGroupIdTaskEditorRoute
   '/groups/$groupId/task-management': typeof GroupsGroupIdTaskManagementRoute
@@ -122,6 +137,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/groups': typeof GroupsIndexRoute
   '/groups/$groupId/information-hub': typeof GroupsGroupIdInformationHubRoute
+  '/groups/$groupId/log-in': typeof GroupsGroupIdLogInRoute
   '/groups/$groupId/messages': typeof GroupsGroupIdMessagesRoute
   '/groups/$groupId/task-editor': typeof GroupsGroupIdTaskEditorRoute
   '/groups/$groupId/task-management': typeof GroupsGroupIdTaskManagementRoute
@@ -132,6 +148,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/groups/': typeof GroupsIndexRoute
   '/groups/$groupId/information-hub': typeof GroupsGroupIdInformationHubRoute
+  '/groups/$groupId/log-in': typeof GroupsGroupIdLogInRoute
   '/groups/$groupId/messages': typeof GroupsGroupIdMessagesRoute
   '/groups/$groupId/task-editor': typeof GroupsGroupIdTaskEditorRoute
   '/groups/$groupId/task-management': typeof GroupsGroupIdTaskManagementRoute
@@ -143,6 +160,7 @@ export interface FileRouteTypes {
     | '/'
     | '/groups'
     | '/groups/$groupId/information-hub'
+    | '/groups/$groupId/log-in'
     | '/groups/$groupId/messages'
     | '/groups/$groupId/task-editor'
     | '/groups/$groupId/task-management'
@@ -151,6 +169,7 @@ export interface FileRouteTypes {
     | '/'
     | '/groups'
     | '/groups/$groupId/information-hub'
+    | '/groups/$groupId/log-in'
     | '/groups/$groupId/messages'
     | '/groups/$groupId/task-editor'
     | '/groups/$groupId/task-management'
@@ -159,6 +178,7 @@ export interface FileRouteTypes {
     | '/'
     | '/groups/'
     | '/groups/$groupId/information-hub'
+    | '/groups/$groupId/log-in'
     | '/groups/$groupId/messages'
     | '/groups/$groupId/task-editor'
     | '/groups/$groupId/task-management'
@@ -169,6 +189,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GroupsIndexRoute: typeof GroupsIndexRoute
   GroupsGroupIdInformationHubRoute: typeof GroupsGroupIdInformationHubRoute
+  GroupsGroupIdLogInRoute: typeof GroupsGroupIdLogInRoute
   GroupsGroupIdMessagesRoute: typeof GroupsGroupIdMessagesRoute
   GroupsGroupIdTaskEditorRoute: typeof GroupsGroupIdTaskEditorRoute
   GroupsGroupIdTaskManagementRoute: typeof GroupsGroupIdTaskManagementRoute
@@ -178,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GroupsIndexRoute: GroupsIndexRoute,
   GroupsGroupIdInformationHubRoute: GroupsGroupIdInformationHubRoute,
+  GroupsGroupIdLogInRoute: GroupsGroupIdLogInRoute,
   GroupsGroupIdMessagesRoute: GroupsGroupIdMessagesRoute,
   GroupsGroupIdTaskEditorRoute: GroupsGroupIdTaskEditorRoute,
   GroupsGroupIdTaskManagementRoute: GroupsGroupIdTaskManagementRoute,
@@ -196,6 +218,7 @@ export const routeTree = rootRoute
         "/",
         "/groups/",
         "/groups/$groupId/information-hub",
+        "/groups/$groupId/log-in",
         "/groups/$groupId/messages",
         "/groups/$groupId/task-editor",
         "/groups/$groupId/task-management"
@@ -209,6 +232,9 @@ export const routeTree = rootRoute
     },
     "/groups/$groupId/information-hub": {
       "filePath": "groups/$groupId/information-hub.tsx"
+    },
+    "/groups/$groupId/log-in": {
+      "filePath": "groups/$groupId/log-in.tsx"
     },
     "/groups/$groupId/messages": {
       "filePath": "groups/$groupId/messages.tsx"

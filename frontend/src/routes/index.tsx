@@ -39,6 +39,13 @@ function Index() {
         >
           Task Management
         </Link>
+        <Link
+          to="/groups/$groupId/log-in"
+          params={{ groupId: "1" }}
+          className="[&.active]:font-bold text-blue-600"
+        >
+          log-in
+        </Link>
         <ThemeToggle />
       </div>
 

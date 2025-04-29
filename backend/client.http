@@ -1,0 +1,16 @@
+GET http://localhost:5000/api/groups
+
+
+###
+GET http://localhost:5000/api/groups/6
+
+### 
+POST http://localhost:5000/api/groups
+Content-Type: application/json
+
+{
+  "name": "Second group",
+  "description": "A new group",
+  "created_by_id": 1
+}
+

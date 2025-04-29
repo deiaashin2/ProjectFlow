@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from models import db, User
+from models.user import db, User
+from routes.group_routes import group_bp
 
 app = Flask(__name__)
 CORS(app)
@@ -8,6 +9,8 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
+
+app.register_blueprint(group_bp)
 
 @app.route("/api/login", methods=["POST"])
 def login():

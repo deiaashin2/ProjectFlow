@@ -7,7 +7,7 @@ group_bp = Blueprint("group_bp", __name__, url_prefix="/api/groups")
 
 @group_bp.route("/", methods=["GET"])
 def get_all_groups():
-    user_id = 1
+    user_id = 3
     try:
         groups = Group.get_all(user_id)
         return jsonify({"groups": groups}), 200
@@ -17,7 +17,7 @@ def get_all_groups():
 
 @group_bp.route("/<int:group_id>", methods=["GET"])
 def get_group(group_id):
-    user_id = 1
+    user_id = 3
     try:
         groups = Group.get_by_id(user_id, group_id)
         return jsonify({"groups": groups}), 200
@@ -37,3 +37,27 @@ def create_group():
         return jsonify({"group": new_group})
     except Exception as e:
         return jsonify({"message": str(e)}), 500
+
+
+@group_bp.route("/<int:group_id>", methods=["DELETE"])
+def delete_group(group_id):
+    try:
+        result = Group.delete(group_id)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+
+
+@group_bp.route("/<int:group_id>/invite", methods=["POST"])
+def invite_member(group_id):
+    data = request.get_json()
+    user_id = data.get("user_id")
+
+    if not user_id:
+        return jsonify({"message": "Invalid user"}), 500
+
+    try:
+        result = Group.invite(user_id, group_id)
+        return jsonify(result), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400

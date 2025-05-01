@@ -1,14 +1,5 @@
 import * as React from "react";
-import {
-  Bird,
-  Command,
-  Rabbit,
-  Snail,
-  Turtle,
-  Squirrel,
-  ChevronDown,
-  Hash,
-} from "lucide-react";
+import { Bird, Command, Rabbit, Snail, Turtle, Squirrel } from "lucide-react";
 import { NavUser } from "./nav-user";
 import {
   Sidebar,
@@ -16,31 +7,17 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "./ui/collapsible";
-
 const user = {
   name: "shadcn",
   email: "m@example.com",
   avatar: "/avatars/shadcn.jpg",
 };
-
-const channels = [
-  { name: "Information", subChannels: ["welcomes", "announcements"] },
-  { name: "Text Channels", subChannels: ["general", "notes", "help"] },
-  { name: "Voice Channels", subChannels: ["Study Room"] },
-];
 
 const navMain = [
   {

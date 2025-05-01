@@ -8,11 +8,12 @@ DROP TABLE IF EXISTS group_members;
 DROP TABLE IF EXISTS groups;
 DROP TABLE IF EXISTS users;
 
+
 CREATE TABLE users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
   email TEXT NOT NULL,
-  PASSWORD TEXT NOT NULL
+  password TEXT NOT NULL
 );
 
 CREATE TABLE groups (
@@ -41,9 +42,9 @@ CREATE TABLE announcements (
   title TEXT NOT NULL,
   details TEXT,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN (group_id) REFERENCES groups(id),
-  FOREIGN (created_by_id) REFERENCES users(id) 
-)
+  FOREIGN KEY (group_id) REFERENCES groups(id),
+  FOREIGN KEY (created_by_id) REFERENCES users(id) 
+);
 
 CREATE TABLE tasks (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -63,27 +64,96 @@ CREATE TABLE task_statuses (
   name TEXT NOT NULL
 );
 
-CREAT TABLE messages (
+CREATE TABLE messages (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER NOT NULL,
   from_user_id INTEGER NOT NULL,
   contents TEXT,
   sent_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  seen_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  seen_at DATETIME,
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (from_user_id) REFERENCES users(id)
 );
 
 
 -- Seed script
+INSERT INTO users (name, email, password)
+VALUES
+  ('Andreia', 'deiaashin@gmail.com', 'Shin123'),
+  ('Marlene', 'marlenelee1267@gmaill.com', 'Ma12345'),
+  ('Test', 'test@test.com', 'test1234');
+
 INSERT INTO groups (name, description, banner, created_by_id)
 VALUES 
-  ('First Group', 'Hello world.', NULL, 3),
-  ('Programming', 'A group for programming.', NULL, 3),
-  ('Team', 'Team project', NULL, 3);
+  ('First Group', 'Hello world.', NULL, 1),
+  ('Programming', 'A group for programming.', NULL, 1),
+  ('Team', 'Team project', NULL, 2);
 
 INSERT INTO group_members (user_id, group_id)
 VALUES 
-  (3, 1),
-  (3, 2),  
-  (3, 3);
+  (1, 1),
+  (1, 2),  
+  (2, 3);
+
+INSERT INTO announcements (
+  group_id,
+  created_by_id,
+  title,
+  details
+)
+VALUES
+  (
+    1,
+    1,
+    "Test announcement!",
+    NULL
+  ),
+  (
+    2,
+    3,
+    "Test announcement!",
+    NULL
+  );
+
+INSERT INTO task_statuses (name)
+VALUES 
+  ('Inactive'),
+  ('Pending'),
+  ('Done'),
+  ('Late'),
+  ('Canceled');
+
+INSERT INTO tasks (
+  group_id,
+  user_id,
+  name,
+  details,
+  status_id,
+  due_date
+)
+VALUES
+  (
+    1,
+    1,
+    "Use this data in the frontend",
+    "Fetch this data and display it in the front end",
+    1,
+    NULL
+  );
+
+INSERT INTO messages (
+  user_id,
+  from_user_id,
+  contents
+)
+VALUES
+  (
+    1,
+    2,
+    "Psst. Here's a message within our group."
+  ),
+  (
+    3,
+    2,
+    "Hey, I'm not in a group with you! I think. Is this allowed?"
+  );

@@ -1,9 +1,11 @@
-import { createFileRoute, Navigate } from "@tanstack/react-router";
+import { createFileRoute, Navigate, useNavigate } from "@tanstack/react-router";
 import { Alert, AlertTitle, AlertDescription } from "../components/ui/alert";
 import { Terminal } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import ThemeToggle from "@/components/theme-toggle";
 import useAuth from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import useSignout from "@/hooks/useSignout";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -11,13 +13,25 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { isAuthenticated, isPending } = useAuth();
+  const signoutMutation = useSignout();
+  const navigate = useNavigate();
 
   if (isPending) {
     return <div>Loading...</div>;
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/groups" />;
+    return <Navigate to="/log-in" />;
+  }
+
+  function handleSignout(e: any) {
+    e.preventDefault();
+
+    signoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        navigate({ to: "/log-in" });
+      },
+    });
   }
   return (
     <div>
@@ -49,13 +63,17 @@ function Index() {
         >
           Task Management
         </Link>
-        <Link
-          to="/groups/$groupId/log-in"
-          params={{ groupId: "1" }}
-          className="[&.active]:font-bold text-blue-600"
-        >
-          log-in
+        <Link to="/log-in" className="[&.active]:font-bold text-blue-600">
+          Login
         </Link>
+
+        <Link to="/sign-up" className="[&.active]:font-bold text-blue-600">
+          Signup
+        </Link>
+
+        <Button onClick={handleSignout}>
+          {signoutMutation.isPending ? "Signing out..." : "Sign Out"}
+        </Button>
         <ThemeToggle />
       </div>
 

@@ -11,16 +11,28 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as SignUpImport } from './routes/sign-up'
+import { Route as LogInImport } from './routes/log-in'
 import { Route as IndexImport } from './routes/index'
 import { Route as GroupsIndexImport } from './routes/groups/index'
 import { Route as GroupsGroupIdTaskManagementImport } from './routes/groups/$groupId/task-management'
 import { Route as GroupsGroupIdTaskEditorImport } from './routes/groups/$groupId/task-editor'
-import { Route as GroupsGroupIdSignUpImport } from './routes/groups/$groupId/sign-up'
 import { Route as GroupsGroupIdMessagesImport } from './routes/groups/$groupId/messages'
-import { Route as GroupsGroupIdLogInImport } from './routes/groups/$groupId/log-in'
 import { Route as GroupsGroupIdInformationHubImport } from './routes/groups/$groupId/information-hub'
 
 // Create/Update Routes
+
+const SignUpRoute = SignUpImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LogInRoute = LogInImport.update({
+  id: '/log-in',
+  path: '/log-in',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -47,21 +59,9 @@ const GroupsGroupIdTaskEditorRoute = GroupsGroupIdTaskEditorImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const GroupsGroupIdSignUpRoute = GroupsGroupIdSignUpImport.update({
-  id: '/groups/$groupId/sign-up',
-  path: '/groups/$groupId/sign-up',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const GroupsGroupIdMessagesRoute = GroupsGroupIdMessagesImport.update({
   id: '/groups/$groupId/messages',
   path: '/groups/$groupId/messages',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const GroupsGroupIdLogInRoute = GroupsGroupIdLogInImport.update({
-  id: '/groups/$groupId/log-in',
-  path: '/groups/$groupId/log-in',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -83,6 +83,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/log-in': {
+      id: '/log-in'
+      path: '/log-in'
+      fullPath: '/log-in'
+      preLoaderRoute: typeof LogInImport
+      parentRoute: typeof rootRoute
+    }
+    '/sign-up': {
+      id: '/sign-up'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof SignUpImport
+      parentRoute: typeof rootRoute
+    }
     '/groups/': {
       id: '/groups/'
       path: '/groups'
@@ -97,25 +111,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GroupsGroupIdInformationHubImport
       parentRoute: typeof rootRoute
     }
-    '/groups/$groupId/log-in': {
-      id: '/groups/$groupId/log-in'
-      path: '/groups/$groupId/log-in'
-      fullPath: '/groups/$groupId/log-in'
-      preLoaderRoute: typeof GroupsGroupIdLogInImport
-      parentRoute: typeof rootRoute
-    }
     '/groups/$groupId/messages': {
       id: '/groups/$groupId/messages'
       path: '/groups/$groupId/messages'
       fullPath: '/groups/$groupId/messages'
       preLoaderRoute: typeof GroupsGroupIdMessagesImport
-      parentRoute: typeof rootRoute
-    }
-    '/groups/$groupId/sign-up': {
-      id: '/groups/$groupId/sign-up'
-      path: '/groups/$groupId/sign-up'
-      fullPath: '/groups/$groupId/sign-up'
-      preLoaderRoute: typeof GroupsGroupIdSignUpImport
       parentRoute: typeof rootRoute
     }
     '/groups/$groupId/task-editor': {
@@ -139,22 +139,22 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/log-in': typeof LogInRoute
+  '/sign-up': typeof SignUpRoute
   '/groups': typeof GroupsIndexRoute
   '/groups/$groupId/information-hub': typeof GroupsGroupIdInformationHubRoute
-  '/groups/$groupId/log-in': typeof GroupsGroupIdLogInRoute
   '/groups/$groupId/messages': typeof GroupsGroupIdMessagesRoute
-  '/groups/$groupId/sign-up': typeof GroupsGroupIdSignUpRoute
   '/groups/$groupId/task-editor': typeof GroupsGroupIdTaskEditorRoute
   '/groups/$groupId/task-management': typeof GroupsGroupIdTaskManagementRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/log-in': typeof LogInRoute
+  '/sign-up': typeof SignUpRoute
   '/groups': typeof GroupsIndexRoute
   '/groups/$groupId/information-hub': typeof GroupsGroupIdInformationHubRoute
-  '/groups/$groupId/log-in': typeof GroupsGroupIdLogInRoute
   '/groups/$groupId/messages': typeof GroupsGroupIdMessagesRoute
-  '/groups/$groupId/sign-up': typeof GroupsGroupIdSignUpRoute
   '/groups/$groupId/task-editor': typeof GroupsGroupIdTaskEditorRoute
   '/groups/$groupId/task-management': typeof GroupsGroupIdTaskManagementRoute
 }
@@ -162,11 +162,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/log-in': typeof LogInRoute
+  '/sign-up': typeof SignUpRoute
   '/groups/': typeof GroupsIndexRoute
   '/groups/$groupId/information-hub': typeof GroupsGroupIdInformationHubRoute
-  '/groups/$groupId/log-in': typeof GroupsGroupIdLogInRoute
   '/groups/$groupId/messages': typeof GroupsGroupIdMessagesRoute
-  '/groups/$groupId/sign-up': typeof GroupsGroupIdSignUpRoute
   '/groups/$groupId/task-editor': typeof GroupsGroupIdTaskEditorRoute
   '/groups/$groupId/task-management': typeof GroupsGroupIdTaskManagementRoute
 }
@@ -175,31 +175,31 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/log-in'
+    | '/sign-up'
     | '/groups'
     | '/groups/$groupId/information-hub'
-    | '/groups/$groupId/log-in'
     | '/groups/$groupId/messages'
-    | '/groups/$groupId/sign-up'
     | '/groups/$groupId/task-editor'
     | '/groups/$groupId/task-management'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/log-in'
+    | '/sign-up'
     | '/groups'
     | '/groups/$groupId/information-hub'
-    | '/groups/$groupId/log-in'
     | '/groups/$groupId/messages'
-    | '/groups/$groupId/sign-up'
     | '/groups/$groupId/task-editor'
     | '/groups/$groupId/task-management'
   id:
     | '__root__'
     | '/'
+    | '/log-in'
+    | '/sign-up'
     | '/groups/'
     | '/groups/$groupId/information-hub'
-    | '/groups/$groupId/log-in'
     | '/groups/$groupId/messages'
-    | '/groups/$groupId/sign-up'
     | '/groups/$groupId/task-editor'
     | '/groups/$groupId/task-management'
   fileRoutesById: FileRoutesById
@@ -207,22 +207,22 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LogInRoute: typeof LogInRoute
+  SignUpRoute: typeof SignUpRoute
   GroupsIndexRoute: typeof GroupsIndexRoute
   GroupsGroupIdInformationHubRoute: typeof GroupsGroupIdInformationHubRoute
-  GroupsGroupIdLogInRoute: typeof GroupsGroupIdLogInRoute
   GroupsGroupIdMessagesRoute: typeof GroupsGroupIdMessagesRoute
-  GroupsGroupIdSignUpRoute: typeof GroupsGroupIdSignUpRoute
   GroupsGroupIdTaskEditorRoute: typeof GroupsGroupIdTaskEditorRoute
   GroupsGroupIdTaskManagementRoute: typeof GroupsGroupIdTaskManagementRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LogInRoute: LogInRoute,
+  SignUpRoute: SignUpRoute,
   GroupsIndexRoute: GroupsIndexRoute,
   GroupsGroupIdInformationHubRoute: GroupsGroupIdInformationHubRoute,
-  GroupsGroupIdLogInRoute: GroupsGroupIdLogInRoute,
   GroupsGroupIdMessagesRoute: GroupsGroupIdMessagesRoute,
-  GroupsGroupIdSignUpRoute: GroupsGroupIdSignUpRoute,
   GroupsGroupIdTaskEditorRoute: GroupsGroupIdTaskEditorRoute,
   GroupsGroupIdTaskManagementRoute: GroupsGroupIdTaskManagementRoute,
 }
@@ -238,11 +238,11 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/log-in",
+        "/sign-up",
         "/groups/",
         "/groups/$groupId/information-hub",
-        "/groups/$groupId/log-in",
         "/groups/$groupId/messages",
-        "/groups/$groupId/sign-up",
         "/groups/$groupId/task-editor",
         "/groups/$groupId/task-management"
       ]
@@ -250,20 +250,20 @@ export const routeTree = rootRoute
     "/": {
       "filePath": "index.tsx"
     },
+    "/log-in": {
+      "filePath": "log-in.tsx"
+    },
+    "/sign-up": {
+      "filePath": "sign-up.tsx"
+    },
     "/groups/": {
       "filePath": "groups/index.tsx"
     },
     "/groups/$groupId/information-hub": {
       "filePath": "groups/$groupId/information-hub.tsx"
     },
-    "/groups/$groupId/log-in": {
-      "filePath": "groups/$groupId/log-in.tsx"
-    },
     "/groups/$groupId/messages": {
       "filePath": "groups/$groupId/messages.tsx"
-    },
-    "/groups/$groupId/sign-up": {
-      "filePath": "groups/$groupId/sign-up.tsx"
     },
     "/groups/$groupId/task-editor": {
       "filePath": "groups/$groupId/task-editor.tsx"

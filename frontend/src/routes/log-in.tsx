@@ -6,18 +6,16 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { API_BASE_URL } from "@/lib/constants";
 import useAuth from "@/hooks/useAuth";
+import { useQueryClient } from "@tanstack/react-query";
 
-export const Route = createFileRoute("/groups/$groupId/log-in")({
+export const Route = createFileRoute("/log-in")({
   component: LoginPage,
 });
 
 function LoginPage() {
   const navigate = useNavigate();
   const { isAuthenticated, isPending } = useAuth();
-
-  console.log(isAuthenticated)
-
-  const groupId = Route.useParams().groupId;
+  const queryClient = useQueryClient()
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,7 +25,7 @@ function LoginPage() {
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/groups"/>
+    return <Navigate to="/groups" />;
   }
 
   const handleLogin = async () => {
@@ -46,11 +44,11 @@ function LoginPage() {
 
       if (data.success) {
         console.log("Login successful, navigating...");
-        
-        navigate({ to: `/groups/${groupId}/information-hub` });
+        queryClient.invalidateQueries({ queryKey: ["auth-status"] }),
+        navigate({ to: `/groups` });
       } else {
         console.log("Login failed, navigating to sign-up...");
-        navigate({ to: `/groups/${groupId}/sign-up` });
+        navigate({ to: `/sign-up` });
       }
     } catch (error) {
       console.error("Login request failed:", error);
@@ -93,7 +91,7 @@ function LoginPage() {
           <p className="text-sm text-center text-gray-500">
             Don't have an account?{" "}
             <a
-              href={`/groups/${groupId}/sign-up`}
+              href={`/sign-up`}
               className="text-blue-600 hover:underline"
             >
               Sign up

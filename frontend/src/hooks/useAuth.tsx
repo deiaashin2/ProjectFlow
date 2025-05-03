@@ -26,11 +26,7 @@ const useAuth = () => {
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["auth-status"],
     queryFn: getAuth,
-    retry: 0,
   });
-
-  console.log("isAuthenteicated: ", data?.isAuthenticated);
-  console.log("user: ", data?.user);
 
   return {
     isAuthenticated: data?.isAuthenticated ?? false,

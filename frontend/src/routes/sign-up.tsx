@@ -12,9 +12,10 @@ import {
 import { Label } from "@/components/ui/label";
 import { API_BASE_URL } from "@/lib/constants";
 import useAuth from "@/hooks/useAuth";
+import { useQueryClient } from "@tanstack/react-query";
 
-export const Route = createFileRoute("/groups/$groupId/sign-up")({
-  component: RouteComponent,
+export const Route = createFileRoute("/sign-up")({
+  component: SignupPage,
 });
 
 function getPasswordErrors(password: string): string[] {
@@ -28,9 +29,10 @@ function getPasswordErrors(password: string): string[] {
   return errors;
 }
 
-function RouteComponent() {
+function SignupPage() {
   const navigate = useNavigate();
-  const groupId = Route.useParams().groupId;
+  const queryClient = useQueryClient()
+
   const { isAuthenticated, isPending } = useAuth();
 
   const [email, setEmail] = useState("");
@@ -63,7 +65,8 @@ function RouteComponent() {
       console.log("SIGN UP RESPONSE:", data);
 
       if (data.success) {
-        navigate({ to: `/groups/${groupId}/log-in` });
+        queryClient.invalidateQueries({ queryKey: ["auth-status"] }),
+        navigate({ to: `/log-in` });
       } else {
         setError(data.message || "Sign up failed. Try again.");
       }
@@ -172,10 +175,7 @@ function RouteComponent() {
           </Button>
           <p className="text-sm text-muted-foreground text-center">
             Already have an account?{" "}
-            <a
-              href={`/groups/${groupId}/log-in`}
-              className="text-blue-600 hover:underline"
-            >
+            <a href={`/log-in`} className="text-blue-600 hover:underline">
               Log In
             </a>
           </p>

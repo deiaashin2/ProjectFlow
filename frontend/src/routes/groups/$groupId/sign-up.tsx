@@ -1,13 +1,23 @@
 import { useState } from "react";
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute('/groups/$groupId/sign-up')({
   component: RouteComponent,
-})
+});
+
+function getPasswordErrors(password: string): string[] {
+  const errors = [];
+  if (password.length < 8) errors.push("At least 8 characters");
+  if (!/[A-Z]/.test(password)) errors.push("At least one uppercase letter");
+  if (!/[a-z]/.test(password)) errors.push("At least one lowercase letter");
+  if (!/\d/.test(password)) errors.push("At least one number");
+  if (!/[!@#$%^&*(),.?\":{}|<>]/.test(password)) errors.push("At least one special character");
+  return errors;
+}
 
 function RouteComponent() {
   const navigate = useNavigate();
@@ -15,29 +25,31 @@ function RouteComponent() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
   const [error, setError] = useState("");
+
+  const passwordErrors = getPasswordErrors(password);
+  const isPasswordValid = passwordErrors.length === 0;
 
   const handleSignUp = async () => {
     try {
       const response = await fetch("http://127.0.0.1:5000/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, name }),
       });
 
       const data = await response.json();
       console.log("SIGN UP RESPONSE:", data);
 
       if (data.success) {
-        console.log("Account created, navigating to login...");
         navigate({ to: `/groups/${groupId}/log-in` });
       } else {
-        console.error("Sign up failed:", data.message);
         setError(data.message || "Sign up failed. Try again.");
       }
-    } catch (error) {
-      console.error("Sign up request failed:", error);
+    } catch (err) {
+      console.error("Sign up request failed:", err);
       setError("Network error. Please try again.");
     }
   };
@@ -59,15 +71,35 @@ function RouteComponent() {
           </div>
           <div>
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                className="absolute top-1/2 right-3 -translate-y-1/2 text-sm text-blue-600 hover:underline"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+            <ul className="mt-2 text-sm space-y-1">
+              <li className={password.length >= 8 ? "text-green-600" : "text-red-600"}>• At least 8 characters</li>
+              <li className={/[A-Z]/.test(password) ? "text-green-600" : "text-red-600"}>• At least one uppercase letter</li>
+              <li className={/[a-z]/.test(password) ? "text-green-600" : "text-red-600"}>• At least one lowercase letter</li>
+              <li className={/\d/.test(password) ? "text-green-600" : "text-red-600"}>• At least one number</li>
+              <li className={/[!@#$%^&*(),.?\":{}|<>]/.test(password) ? "text-green-600" : "text-red-600"}>• At least one special character</li>
+            </ul>
           </div>
 
-          {error && (
-            <p className="text-red-600 text-sm mt-2 text-center">{error}</p>
-          )}
+          {error && <p className="text-red-600 text-sm mt-2 text-center">{error}</p>}
         </CardContent>
         <CardFooter className="flex flex-col gap-3">
-          <Button className="w-full" onClick={handleSignUp}>
+          <Button className="w-full" onClick={handleSignUp} disabled={!isPasswordValid}>
             Sign Up
           </Button>
           <p className="text-sm text-muted-foreground text-center">

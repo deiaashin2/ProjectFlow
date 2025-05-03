@@ -1,13 +1,12 @@
 import { z } from "zod";
 import { useState } from "react";
-import { createFileRoute, Navigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import GroupHeader from "@/features/groups/group-header";
 import GroupList from "@/features/groups/group-list";
 import GroupSidebar from "@/features/groups/group-sidebar";
 import TimeOfDayHeader from "@/components/time-of-day";
 import CreateGroupMenu from "@/features/groups/create-group";
-import useAuth from "@/hooks/useAuth";
 
 const groupSearchSchema = z.object({ query: z.string().optional() });
 
@@ -18,15 +17,6 @@ export const Route = createFileRoute("/groups/")({
 
 function GroupsPage() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
-  const { isAuthenticated, isPending } = useAuth();
-
-  if (isPending) {
-    return <></>;
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to="/log-in" />;
-  }
 
   const toggleSidebar = () => setIsSidebarCollapsed((prevState) => !prevState);
   return (

@@ -72,27 +72,24 @@ def login():
 @app.route("/api/signout", methods=["POST"])
 def signout():
     session.clear()
-    return make_response('', 204)
+    return jsonify({"success": True}), 200
 
 @app.route("/api/auth", methods=["GET"])
 def auth_status():
     user_id = session.get("user_id")
     if user_id is None:
-        return jsonify({"isAuthenticated" : False, "user": None}), 401
+        return jsonify({"isAuthenticated" : False, "user": None}), 200
     
     user = User.get_by_id(user_id)
 
     if user:
-        return jsonify({"isAuthenticated" : True, "user": user}), 200
-    else:
-        return jsonify({
-          "isAuthenticated": False,
-          "user": {
+        return jsonify({"isAuthenticated" : True, "user": {
               "id": user["id"],
               "name": user["name"],
               "email": user["email"]
-          }
-      }), 401
+        }}), 200
+    else:
+        return jsonify({"isAuthenticated": False, "user": None }), 200
 
 @app.route('/debug')
 def debug_session():

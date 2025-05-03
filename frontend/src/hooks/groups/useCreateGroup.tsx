@@ -6,13 +6,10 @@ async function createGroup(data: {
   description: string;
   banner: File;
 }) {
-  const response = await fetch(`${API_BASE_URL}/groups`, {
+  const response = await fetch(`${API_BASE_URL}/api/groups`, {
     method: "POST",
-    body: JSON.stringify({
-      ...data,
-      members: Math.floor(Math.random() * 100),
-      banner: "https://picsum.photos/640/480",
-    }),
+    credentials: "include",
+    body: JSON.stringify(data),
     headers: { "content-type": "application/json" },
   });
 

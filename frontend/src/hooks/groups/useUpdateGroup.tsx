@@ -10,10 +10,10 @@ type UpdateGroup = {
 };
 
 async function updateGroup(data: UpdateGroup): Promise<Group> {
-  console.log(data);
-  const res = await fetch(`${API_BASE_URL}/groups/${data.id}`, {
+  const res = await fetch(`${API_BASE_URL}/api/groups/${data.id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(data),
   });
 

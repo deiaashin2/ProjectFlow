@@ -42,11 +42,15 @@ function GroupCard({ group }: { group: Group }) {
   return (
     <Card className="relative pt-0 group">
       <GroupActionMenu group={group} />
-      <img
-        src={`${group.banner}?random=${group.id}`}
-        className="h-44 object-cover rounded-t-xl"
-        alt={`${group.name} banner`}
-      />
+      {group.banner ? (
+        <img
+          src={group.banner}
+          className="h-44 object-cover rounded-t-xl"
+          alt={`${group.name} banner`}
+        />
+      ) : (
+        <div className="h-44 object-cover rounded-t-xl bg-indigo-500"></div>
+      )}
       <CardHeader>
         <CardTitle className="text-xl">{group.name}</CardTitle>
         <CardDescription className="line-clamp-2 break-words text-ellipsis min-h-10">

@@ -11,15 +11,17 @@ export type Group = {
 };
 
 async function getGroups(query: string | undefined): Promise<Group[]> {
-  const url = new URL(`${API_BASE_URL}/groups`);
-  url.searchParams.append("name", query || "");
+  const url = new URL(`${API_BASE_URL}/api/groups`);
 
-  const response = await fetch(url);
+  if (query) {
+    url.searchParams.append("name", query);
+  }
+
+  const response = await fetch(url, {
+    credentials: "include",
+  });
 
   if (!response.ok) {
-    if (response.status === 404) {
-      return [];
-    }
     throw new Error("Error fetching groups");
   }
 

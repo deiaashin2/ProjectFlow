@@ -1,14 +1,24 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { Alert, AlertTitle, AlertDescription } from "../components/ui/alert";
 import { Terminal } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import ThemeToggle from "@/components/theme-toggle";
+import useAuth from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
 function Index() {
+  const { isAuthenticated, isPending } = useAuth();
+
+  if (isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/groups" />;
+  }
   return (
     <div>
       <div className="flex gap-4 underline">

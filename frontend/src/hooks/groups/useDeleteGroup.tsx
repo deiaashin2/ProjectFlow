@@ -3,8 +3,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Group } from "./useGroups";
 
 async function deleteGroup(groupId: string): Promise<Group> {
-  const response = await fetch(`${API_BASE_URL}/groups/${groupId}`, {
+  const response = await fetch(`${API_BASE_URL}/api/groups/${groupId}`, {
     method: "DELETE",
+    credentials: "include",
   });
 
   if (!response.ok) {

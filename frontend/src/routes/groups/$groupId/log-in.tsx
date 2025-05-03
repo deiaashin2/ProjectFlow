@@ -1,38 +1,52 @@
-import { useEffect, useRef, useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router"; 
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { createFileRoute, Navigate, useNavigate } from "@tanstack/react-router";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { API_BASE_URL } from "@/lib/constants";
+import useAuth from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/groups/$groupId/log-in")({
-  component: MessagePage,
+  component: LoginPage,
 });
 
-function MessagePage() {
-  const scrollRef = useRef<HTMLDivElement>(null);
+function LoginPage() {
   const navigate = useNavigate();
+  const { isAuthenticated, isPending } = useAuth();
+
+  console.log(isAuthenticated)
 
   const groupId = Route.useParams().groupId;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  if (isPending) {
+    return <></>;
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/groups"/>
+  }
+
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/login", {
+      const response = await fetch(`${API_BASE_URL}/api/login`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-  
+
       console.log("RESPONSE STATUS:", response.status);
-  
+
       const data = await response.json();
       console.log("LOGIN RESPONSE:", data);
-  
+
       if (data.success) {
         console.log("Login successful, navigating...");
+        
         navigate({ to: `/groups/${groupId}/information-hub` });
       } else {
         console.log("Login failed, navigating to sign-up...");
@@ -43,13 +57,6 @@ function MessagePage() {
       alert("Something went wrong. Check your network and backend.");
     }
   };
-  
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, []);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -97,4 +104,3 @@ function MessagePage() {
     </div>
   );
 }
-

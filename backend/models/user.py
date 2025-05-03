@@ -50,3 +50,18 @@ class User:
         ).fetchone()
         conn.close()
         return dict(user) if user else None
+    
+    @classmethod
+    def get_by_id(cls, id):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        user = cursor.execute(
+            "SELECT id, name, email FROM users WHERE id = ?", (id,)
+        ).fetchone()
+        conn.close()
+
+        if user:
+          return dict(user)
+        else:
+          return None
+    

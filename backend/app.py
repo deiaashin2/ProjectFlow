@@ -1,13 +1,23 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session, make_response
 from flask_cors import CORS
 from models.user import User
 from routes.group_routes import group_bp
+from datetime import timedelta
 import re
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+app.secret_key = "secret"
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['SESSION_COOKIE_SECURE'] = False 
+
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:5173", "http://localhost:5000"]}}, supports_credentials=True)
 
 app.register_blueprint(group_bp)
+
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
 
 def is_valid_password(password):
     if len(password) < 8:
@@ -54,9 +64,39 @@ def login():
     user = User.get_by_email_and_password(email, password)
 
     if user:
+        session["user_id"] = user["id"]
         return jsonify({"success": True, "message": "Login successful.", "user_id": user["id"]}), 200
     else:
         return jsonify({"success": False, "message": "Invalid credentials."}), 401
+
+@app.route("/api/signout", methods=["POST"])
+def signout():
+    session.clear()
+    return make_response('', 204)
+
+@app.route("/api/auth", methods=["GET"])
+def auth_status():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return jsonify({"isAuthenticated" : False, "user": None}), 401
+    
+    user = User.get_by_id(user_id)
+
+    if user:
+        return jsonify({"isAuthenticated" : True, "user": user}), 200
+    else:
+        return jsonify({
+          "isAuthenticated": False,
+          "user": {
+              "id": user["id"],
+              "name": user["name"],
+              "email": user["email"]
+          }
+      }), 401
+
+@app.route('/debug')
+def debug_session():
+    return jsonify(dict(session))
 
 if __name__ == "__main__":
     app.run(debug=True)

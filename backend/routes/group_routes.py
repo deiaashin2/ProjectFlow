@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from models.group import Group
 
 
@@ -7,20 +7,21 @@ group_bp = Blueprint("group_bp", __name__, url_prefix="/api/groups")
 
 @group_bp.route("/", methods=["GET"])
 def get_all_groups():
-    user_id = 3
+    user_id = session.get("user_id")
+    print("user_id: ", user_id)
     try:
         groups = Group.get_all(user_id)
-        return jsonify({"groups": groups}), 200
+        return jsonify(groups), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
 
 
 @group_bp.route("/<int:group_id>", methods=["GET"])
 def get_group(group_id):
-    user_id = 3
+    user_id = session.get("user_id")
     try:
-        groups = Group.get_by_id(user_id, group_id)
-        return jsonify({"groups": groups}), 200
+        group = Group.get_by_id(user_id, group_id)
+        return jsonify(group), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
 

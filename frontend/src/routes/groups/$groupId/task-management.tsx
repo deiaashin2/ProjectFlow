@@ -172,39 +172,6 @@ function MessageBreadcrumb() {
   );
 }
 
-const data: Task[] = [
-  {
-    id: "m5gr84i9",
-    status: "Pending",
-    taskName: "Task 1", // Updated field for task name
-    dueDate: "2025-03-10", // Sample due date
-  },
-  {
-    id: "3u1reuv4",
-    status: "Late",
-    taskName: "Task 2", // Updated field for task name
-    dueDate: "2025-03-12", // Sample due date
-  },
-  {
-    id: "derv1ws0",
-    status: "Done",
-    taskName: "Task 3", // Updated field for task name
-    dueDate: "2025-03-15", // Sample due date
-  },
-  {
-    id: "5kma53ae",
-    status: "Canceled",
-    taskName: "Task 4", // Updated field for task name
-    dueDate: "2025-03-20", // Sample due date
-  },
-  {
-    id: "bhqecj4p",
-    status: "Done",
-    taskName: "Task 5", // Updated field for task name
-    dueDate: "2025-03-22", // Sample due date
-  },
-];
-
 export type Task = {
   id: string;
   dueDate: string; // Update to string (for date as "YYYY-MM-DD" format)
@@ -317,6 +284,7 @@ export const columns: ColumnDef<Task>[] = [
 ];
 
 export function DataTableDemo() {
+  const [data, setData] = React.useState<Task[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -324,6 +292,26 @@ export function DataTableDemo() {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+
+  React.useEffect(() => {
+    async function fetchTasks() {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/api/groups/1/tasks");
+        const tasks = await response.json();
+        const formatted = tasks.map((task: any) => ({
+          id: task.id.toString(),
+          taskName: task.name,
+          dueDate: task.due_date,
+          status: task.status,
+        }));
+        setData(formatted);
+      } catch (error) {
+        console.error("Failed to fetch tasks:", error);
+      }
+    }
+
+    fetchTasks();
+  }, []);
 
   const table = useReactTable({
     data,
@@ -476,6 +464,41 @@ export function CalendarDemo() {
 }
 
 export function CardWithForm() {
+  const [form, setForm] = useState({
+    taskName: "",
+    dueDate: "",
+    detail: "",
+    status: "Pending",
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/groups/1/tasks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: form.taskName,
+          due_date: form.dueDate,
+          detail: form.detail,
+          status: form.status,
+        }),
+      });
+
+      if (response.ok) {
+        setForm({ taskName: "", dueDate: "", detail: "", status: "Pending" });
+        window.location.reload(); // or refetch task list instead
+      } else {
+        console.error("Failed to create task");
+      }
+    } catch (err) {
+      console.error("Error during task creation:", err);
+    }
+  };
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -483,42 +506,72 @@ export function CardWithForm() {
         <CardDescription>Create your new task in one-click.</CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="name">Task Name</Label>
-              <Input id="name" placeholder="Task name of your project" />
+              <Input
+                id="name"
+                placeholder="Task name of your project"
+                value={form.taskName}
+                onChange={(e) =>
+                  setForm({ ...form, taskName: e.target.value })
+                }
+              />
             </div>
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="due-date">Due date</Label>
-              <Input id="due-date" type="date" placeholder="Due date" />
+              <Input
+                id="due-date"
+                type="date"
+                placeholder="Due date"
+                value={form.dueDate}
+                onChange={(e) =>
+                  setForm({ ...form, dueDate: e.target.value })
+                }
+              />
             </div>
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="task-detail">Task Detail</Label>
-              <Textarea className="w-full h-32 px-4 py-2 resize-y"
-               wrap="soft" id="task_detail" placeholder="Task Details"/>
-            </div>  
+              <Textarea
+                className="w-full h-32 px-4 py-2 resize-y"
+                wrap="soft"
+                id="task_detail"
+                placeholder="Task Details"
+                value={form.detail}
+                onChange={(e) =>
+                  setForm({ ...form, detail: e.target.value })
+                }
+              />
+            </div>
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="status">Status</Label>
-              <Select>
+              <Select
+                value={form.status}
+                onValueChange={(value) => setForm({ ...form, status: value })}
+              >
                 <SelectTrigger id="status">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent position="popper">
-                  <SelectItem value="next">Pending</SelectItem>
-                  <SelectItem value="sveltekit">Late</SelectItem>
-                  <SelectItem value="astro">Done</SelectItem>
-                  <SelectItem value="nuxt">Canceled</SelectItem>
+                  <SelectItem value="Pending">Pending</SelectItem>
+                  <SelectItem value="Late">Late</SelectItem>
+                  <SelectItem value="Done">Done</SelectItem>
+                  <SelectItem value="Canceled">Canceled</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
+          <CardFooter className="flex justify-between mt-4 p-0">
+            <Button type="button" variant="outline" onClick={() => setForm({
+              taskName: "", dueDate: "", detail: "", status: "Pending"
+            })}>
+              Cancel
+            </Button>
+            <Button type="submit">Create</Button>
+          </CardFooter>
         </form>
       </CardContent>
-      <CardFooter className="flex justify-between">
-        <Button variant="outline">Cancel</Button>
-        <Button>Create</Button>
-      </CardFooter>
     </Card>
   );
 }

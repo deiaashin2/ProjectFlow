@@ -73,7 +73,6 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet"
 import { useState } from 'react';
 
@@ -624,32 +623,46 @@ export function SheetDemo({ task }: { task: Task }) {
   }, [isOpen, task.id]);
 
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger asChild>
-        <DropdownMenuItem>Task details</DropdownMenuItem>
-      </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>{fullTask?.taskName || task.taskName}</SheetTitle>
-          <SheetDescription>
-            {fullTask?.detail?.trim()
-              ? fullTask.detail
-              : "No details provided."}
-          </SheetDescription>
-        </SheetHeader>
-        <div className="grid gap-4 py-4">
-          <div className="text-muted-foreground">
-            Due: {fullTask?.dueDate || task.dueDate}
-            <br />
-            Status: {fullTask?.status || task.status}
+    <>
+      <DropdownMenuItem
+        onClick={(e) => {
+          e.preventDefault(); 
+          e.stopPropagation(); 
+          setIsOpen(true); 
+        }}
+      >
+        Task details
+      </DropdownMenuItem>
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetContent
+          onOpenAutoFocus={(e) => e.preventDefault()} 
+          onCloseAutoFocus={(e) => e.preventDefault()} 
+        >
+          <SheetHeader>
+            <SheetTitle>{fullTask?.taskName || task.taskName}</SheetTitle>
+            <SheetDescription>
+              {fullTask?.detail?.trim()
+                ? fullTask.detail
+                : "No details provided."}
+            </SheetDescription>
+          </SheetHeader>
+          <div className="grid gap-4 py-4">
+            <div className="flex flex-col items-center justify-center text-center text-muted-foreground">
+              <p>
+                <span className="font-semibold">Due:</span> {fullTask?.dueDate || task.dueDate}
+              </p>
+              <p>
+                <span className="font-semibold">Status:</span> {fullTask?.status || task.status}
+              </p>
+            </div>
           </div>
-        </div>
-        <SheetFooter>
-          <SheetClose asChild>
-            <Button type="button">Close</Button>
-          </SheetClose>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+          <SheetFooter>
+            <SheetClose asChild>
+              <Button type="button">Close</Button>
+            </SheetClose>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }

@@ -83,8 +83,8 @@ export const Route = createFileRoute("/groups/$groupId/task-management")({
 
 function MessagePage() {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(undefined);
 
-  // Automatically scroll into view on page load`
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -93,54 +93,53 @@ function MessagePage() {
 
   return (
     <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "275px",
-        } as React.CSSProperties
-      }
+      style={{
+        "--sidebar-width": "275px",
+      } as React.CSSProperties}
       defaultOpen={false}
     >
       <AppSidebar />
 
       <SidebarInset>
-      {/* Header */}
-      <header className="sticky top-0 flex shrink-0 gap-4 border-b dark:bg-sidebar">
-        <div className="flex items-center gap-2 flex-grow p-4">
-          <CustomTrigger />
-          <Separator orientation="vertical" className="mr-2" />
-          <MessageBreadcrumb />
-        </div>
-        <div className="flex items-center">
-          <ThemeToggle />
-          <GithubLinkButton />
-        </div>
-      </header>
+        {/* Header */}
+        <header className="sticky top-0 flex shrink-0 gap-4 border-b dark:bg-sidebar">
+          <div className="flex items-center gap-2 flex-grow p-4">
+            <CustomTrigger />
+            <Separator orientation="vertical" className="mr-2" />
+            <MessageBreadcrumb />
+          </div>
+          <div className="flex items-center">
+            <ThemeToggle />
+            <GithubLinkButton />
+          </div>
+        </header>
 
-      {/* Task Layout */}
-      <div className="flex flex-grow h-full dark:bg-sidebar">
-        <div className="flex flex-col flex-grow px-4 pb-6 mt-6">
-          {/* Data Table */}
-          <DataTableDemo />
+        {/* Task Layout */}
+        <div className="flex flex-grow h-full dark:bg-sidebar">
+          <div className="flex flex-col flex-grow px-4 pb-6 mt-6">
+            {/* Data Table */}
+            <DataTableDemo selectedDate={selectedDate} />
 
-          {/* Textarea and CardWithForm */}
-          <div className="flex flex-col gap-4 mt-6 pb-12">
+            {/* Textarea and CardWithForm */}
+            <div className="flex flex-col gap-4 mt-6 pb-12">
+              <div>
+                <CardWithForm />
+              </div>
+            </div>
+          </div>
+
+          {/* Calendar Sidebar */}
+          <div className="hidden lg:flex min-w-56 lg:min-w-64 p-2 border-l bg-sidebar h-full">
             <div>
-              <CardWithForm />
+              <CalendarDemo setSelectedDate={setSelectedDate} />
             </div>
           </div>
         </div>
-
-        {/* Calendar Sidebar */}
-        <div className="hidden lg:flex min-w-56 lg:min-w-64 p-2 border-l bg-sidebar h-full">
-          <div>
-            <CalendarDemo />
-          </div>
-        </div>
-      </div>
       </SidebarInset>
     </SidebarProvider>
   );
 }
+
 
 function MessageBreadcrumb() {
   const navItems = [
@@ -302,14 +301,12 @@ export const columns: ColumnDef<Task>[] = [
   },
 ];
 
-export function DataTableDemo() {
+export function DataTableDemo({ selectedDate }: { selectedDate: Date | undefined }) {
   const [data, setData] = React.useState<Task[]>([]);
+  const [filteredData, setFilteredData] = React.useState<Task[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
   React.useEffect(() => {
@@ -333,8 +330,18 @@ export function DataTableDemo() {
     fetchTasks();
   }, []);
 
+  React.useEffect(() => {
+    if (selectedDate) {
+      const selectedDateString = selectedDate.toISOString().split('T')[0];
+      const filtered = data.filter(task => task.dueDate === selectedDateString);
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(data);
+    }
+  }, [selectedDate, data]);
+
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -470,18 +477,24 @@ export function DataTableDemo() {
   );
 }
 
-export function CalendarDemo() {
+export function CalendarDemo({ setSelectedDate }: { setSelectedDate: (date: Date | undefined) => void }) {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
+
+  const handleDateChange = (selectedDate: Date | undefined) => {
+    setDate(selectedDate);
+    setSelectedDate(selectedDate);
+  };
 
   return (
     <Calendar
       mode="single"
       selected={date}
-      onSelect={setDate}
+      onSelect={handleDateChange}
       className="rounded-md border shadow"
     />
   );
 }
+
 
 export function CardWithForm() {
   const [form, setForm] = useState({

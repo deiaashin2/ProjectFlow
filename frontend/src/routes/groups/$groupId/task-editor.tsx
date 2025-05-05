@@ -20,7 +20,6 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 
-// Route setup with taskId as search param
 export const Route = createFileRoute("/groups/$groupId/task-editor")({
   component: TaskEditor,
   validateSearch: (search) => {
@@ -44,7 +43,6 @@ function TaskEditor() {
 
   const [loading, setLoading] = useState(false);
 
-  // ✅ Fetch task data if editing
   useEffect(() => {
     if (!taskId) return;
 
@@ -53,9 +51,7 @@ function TaskEditor() {
         setLoading(true);
         const response = await fetch(`http://127.0.0.1:5000/api/tasks/${taskId}`);
         const data = await response.json();
-        console.log("Fetched task data:", data); // ✅ Debug output
-
-        // 🧠 Handle both possible formats: { task: {...} } OR just {...}
+        console.log("Fetched task data:", data); 
         const task = data.task ?? data;
 
         if (task.name && task.due_date) {

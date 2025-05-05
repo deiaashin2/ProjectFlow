@@ -44,7 +44,7 @@ function GroupCard({ group }: { group: Group }) {
       <GroupSettingsDialog group={group} />
       {group.banner ? (
         <img
-          src={group.banner}
+          src={`data:${group.mime_type};base64,${group.banner}`}
           className="h-44 object-cover rounded-t-xl"
           alt={`${group.name} banner`}
         />

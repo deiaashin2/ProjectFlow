@@ -1,20 +1,17 @@
 import { API_BASE_URL } from "@/lib/constants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-async function createGroup(data: {
-  name: string;
-  description: string;
-  banner: File;
-}) {
-  const response = await fetch(`${API_BASE_URL}/api/groups`, {
+async function createGroup(name: string) {
+  const response = await fetch(`${API_BASE_URL}/api/groups/`, {
     method: "POST",
     credentials: "include",
-    body: JSON.stringify(data),
-    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ name: name }),
+    headers: { "Content-Type": "application/json" },
   });
 
   if (!response.ok) {
-    throw new Error("Error creating group");
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Error creating group");
   }
 
   return response.json();

@@ -13,22 +13,30 @@ import {
 import { Trash } from "lucide-react";
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { Group } from "@/hooks/groups/useGroups";
+import useDeleteGroup from "@/hooks/groups/useDeleteGroup";
+import { useState } from "react";
 
 type Props = {
   group: Group;
-  activeItem: string;
-  setActiveItem: React.Dispatch<React.SetStateAction<string>>;
 };
 
-function DeleteGroupDialog({ group, activeItem, setActiveItem }: Props) {
+function DeleteGroupDialog({ group }: Props) {
+  const mutation = useDeleteGroup();
+  const [open, setOpen] = useState(false);
+
+  function handleDelete() {
+    mutation.mutate(group.id, {
+      onSuccess: () => {
+        setOpen(false);
+      },
+    });
+  }
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <SidebarMenuItem>
           <SidebarMenuButton
             asChild
-            isActive={"Delete" === activeItem}
-            onClick={() => setActiveItem("Delete")}
             className="text-red-500 hover:text-red-500"
           >
             <div>
@@ -48,7 +56,9 @@ function DeleteGroupDialog({ group, activeItem, setActiveItem }: Props) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={() => handleDelete()}>
+            Continue
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

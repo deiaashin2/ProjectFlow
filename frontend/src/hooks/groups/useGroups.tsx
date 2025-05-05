@@ -6,12 +6,13 @@ export type Group = {
   userId: string;
   name: string;
   members: number;
-  banner: string;
+  banner: string | null;
+  mime_type: string | null;
   description: string;
 };
 
 async function getGroups(query: string | undefined): Promise<Group[]> {
-  const url = new URL(`${API_BASE_URL}/api/groups`);
+  const url = new URL(`${API_BASE_URL}/api/groups/`);
 
   if (query) {
     url.searchParams.append("name", query);

@@ -89,11 +89,7 @@ function GroupSettingsDialog({ group }: Props) {
                       </SidebarMenuButton>
                     </SidebarMenuItem>
 
-                    <DeleteGroupDialog
-                      group={group}
-                      activeItem={activeItem}
-                      setActiveItem={setActiveItem}
-                    />
+                    <DeleteGroupDialog group={group} />
                   </SidebarMenu>
                 </SidebarGroupContent>
               </SidebarGroup>

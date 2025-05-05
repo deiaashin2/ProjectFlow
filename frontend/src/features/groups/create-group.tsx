@@ -19,15 +19,16 @@ function CreateGroupMenu() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const createGroupMutation = useCreateGroup();
 
-  function handleSubmit(formData: FormData) {
-    const name = formData.get("groupName") as string;
-    const description = formData.get("groupDescription") as string;
-    const banner = formData.get("banner") as File;
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
 
-    createGroupMutation.mutate(
-      { name, description, banner },
-      { onSuccess: () => setIsDialogOpen(false) }
-    );
+    const formData = new FormData(e.currentTarget);
+
+    const name = formData.get("groupName") as string;
+
+    createGroupMutation.mutate(name, {
+      onSuccess: () => setIsDialogOpen(false),
+    });
   }
 
   return (
@@ -43,7 +44,7 @@ function CreateGroupMenu() {
           <DialogTitle>New Group</DialogTitle>
           <DialogDescription>Customize your group.</DialogDescription>
         </DialogHeader>
-        <form action={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
             <Label htmlFor="groupName">Group Name</Label>
             <Input type="text" id="groupName" name="groupName" required />

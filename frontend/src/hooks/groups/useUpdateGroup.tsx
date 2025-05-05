@@ -10,15 +10,26 @@ type UpdateGroup = {
 };
 
 async function updateGroup(data: UpdateGroup): Promise<Group> {
-  const res = await fetch(`${API_BASE_URL}/api/groups/${data.id}`, {
+  const formData = new FormData();
+  formData.append("name", data.name);
+
+  if (data.description) {
+    formData.append("description", data.description);
+  }
+
+  if (data.banner) {
+    formData.append("banner", data.banner);
+  }
+
+  const res = await fetch(`${API_BASE_URL}/api/groups/${data.id}/`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
     credentials: "include",
-    body: JSON.stringify(data),
+    body: formData,
   });
 
   if (!res.ok) {
-    throw new Error("Failed to update group");
+    const errorData = await res.json();
+    throw new Error(errorData.message || "Failed to update group");
   }
 
   return res.json();

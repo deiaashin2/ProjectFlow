@@ -51,12 +51,12 @@ CREATE TABLE tasks (
   group_id INTEGER NOT NULL,
   user_id INTEGER,
   name TEXT NOT NULL,
-  details TEXT,
-  status_id INTEGER,
-  due_date DATETIME,
+  detail TEXT,
+  status TEXT,
+  due_date TEXT,
+  created_at TEXT,
   FOREIGN KEY (group_id) REFERENCES groups(id),
-  FOREIGN KEY (user_id) REFERENCES users(id),
-  FOREIGN KEY (status_id) REFERENCES task_statuses(id)
+  FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE task_statuses (

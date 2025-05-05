@@ -56,7 +56,7 @@ const channels = [
 const navMain = [
   {
     title: "Home",
-    url: "/",
+    url: "/groups",
     icon: Home,
     isActive: false,
   },

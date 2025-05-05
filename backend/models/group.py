@@ -1,5 +1,6 @@
 from db_utils import get_db_connection
 from datetime import datetime, timezone
+import base64
 
 
 class Group:
@@ -10,18 +11,14 @@ class Group:
         created_at = datetime.now(timezone.utc)
 
         cursor.execute(
-            """INSERT INTO groups(name, description, banner, created_at, created_by_id)
-                   VALUES (?, ?, ?, ?, ?)""",
+            "INSERT INTO groups(name, description, banner, created_at, created_by_id) VALUES (?, ?, ?, ?, ?)",
             (name, description, banner, created_at, created_by_id),
         )
 
         group_id = cursor.lastrowid
 
         cursor.execute(
-            """
-        INSERT INTO group_members (user_id, group_id)
-        VALUES (?, ?)
-        """,
+            "INSERT INTO group_members (user_id, group_id) VALUES (?, ?)",
             (created_by_id, group_id),
         )
 
@@ -62,13 +59,19 @@ class Group:
         conn.close()
         result = []
         for group in groups:
+            # Convert BLOB data to Base64
+            banner_blob = group["banner"]
+            banner_base64 = (
+                base64.b64encode(banner_blob).decode("utf-8") if banner_blob else None
+            )
             group_data = {
                 "id": group["id"],
                 "name": group["name"],
                 "description": group["description"],
-                "banner": group["banner"],
+                "banner": banner_base64,
                 "created_at": group["created_at"],
                 "created_by_id": group["created_by_id"],
+                "mime-type": group["banner_mime_type"],
             }
             result.append(group_data)
 
@@ -90,6 +93,30 @@ class Group:
 
         conn.close()
         return {"id": group_id}
+
+    @classmethod
+    def update(cls, group_id, name, description="", banner=None, mime_type=None):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        if banner is not None:
+            cursor.execute(
+                "UPDATE groups SET name = ?, description = ?, banner = ?, banner_mime_type = ? WHERE id = ?",
+                (name, description, banner, mime_type, group_id),
+            )
+        else:
+            cursor.execute(
+                "UPDATE groups SET name = ?, description = ?WHERE id = ?",
+                (name, description, group_id),
+            )
+
+        conn.commit()
+        conn.close()
+
+        if cursor.rowcount == 0:
+            raise Exception("Group not found")
+
+        return {"message": "Updated group"}
 
     @classmethod
     def invite(cls, user_id, group_id):

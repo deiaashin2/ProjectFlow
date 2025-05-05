@@ -19,8 +19,9 @@ CREATE TABLE users (
 CREATE TABLE groups (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
-  description TEXT NOT NULL,
+  description TEXT,
   banner BLOB,
+  banner_mime_type TEXT,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   created_by_id INTEGER NOT NULL,
   FOREIGN KEY (created_by_id) REFERENCES users(id)
@@ -127,8 +128,7 @@ INSERT INTO tasks (
   group_id,
   user_id,
   name,
-  details,
-  status_id,
+  detail,
   due_date
 )
 VALUES
@@ -137,7 +137,6 @@ VALUES
     1,
     "Use this data in the frontend",
     "Fetch this data and display it in the front end",
-    1,
     NULL
   );
 

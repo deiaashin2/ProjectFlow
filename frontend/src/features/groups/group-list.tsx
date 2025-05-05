@@ -1,5 +1,4 @@
 import useGroups, { Group } from "@/hooks/groups/useGroups";
-import GroupActionMenu from "./group-actions";
 import { Link, useSearch } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { UserPlus, Users } from "lucide-react";
@@ -11,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import GroupSettingsDialog from "@/features/groups/group-settings";
 
 export default function GroupList() {
   const { query } = useSearch({ from: "/groups/" });
@@ -40,8 +40,8 @@ export default function GroupList() {
 
 function GroupCard({ group }: { group: Group }) {
   return (
-    <Card className="relative pt-0 group">
-      <GroupActionMenu group={group} />
+    <Card className="relative z-10 pt-0 group">
+      <GroupSettingsDialog group={group} />
       {group.banner ? (
         <img
           src={group.banner}

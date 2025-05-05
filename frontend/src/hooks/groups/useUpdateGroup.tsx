@@ -6,7 +6,7 @@ type UpdateGroup = {
   id: string;
   name: string;
   description: string;
-  banner: string;
+  banner: File;
 };
 
 async function updateGroup(data: UpdateGroup): Promise<Group> {

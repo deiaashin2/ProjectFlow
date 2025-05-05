@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify, session, make_response
 from flask_cors import CORS
 from models.user import User
 from routes.group_routes import group_bp
+from routes.task_routes import task_bp
+from routes.announcement_routes import announcement_bp
 from datetime import timedelta
 import re
 
@@ -9,11 +11,13 @@ app = Flask(__name__)
 app.secret_key = "secret"
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-app.config['SESSION_COOKIE_SECURE'] = False 
+app.config['SESSION_COOKIE_SECURE'] = False
 
 CORS(app, resources={r"/api/*": {"origins": ["http://localhost:5173", "http://localhost:5000"]}}, supports_credentials=True)
 
 app.register_blueprint(group_bp)
+app.register_blueprint(task_bp)
+app.register_blueprint(announcement_bp)
 
 @app.before_request
 def make_session_permanent():
@@ -79,7 +83,7 @@ def auth_status():
     user_id = session.get("user_id")
     if user_id is None:
         return jsonify({"isAuthenticated" : False, "user": None}), 200
-    
+
     user = User.get_by_id(user_id)
 
     if user:

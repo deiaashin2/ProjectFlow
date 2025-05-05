@@ -27,3 +27,10 @@ def update_task(task_id):
 def delete_task(task_id):
     Task.delete(task_id)
     return jsonify({"success": True})
+
+@task_bp.route("/api/tasks/<int:task_id>", methods=["GET"])
+def get_task(task_id):
+    task = Task.get_by_id(task_id)
+    if task:
+        return jsonify({"success": True, "task": task})
+    return jsonify({"success": False, "error": "Task not found"}), 404

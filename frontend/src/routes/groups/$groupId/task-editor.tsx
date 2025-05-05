@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, useParams } from "@tanstack/react-router";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -11,59 +12,95 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardFooter,
-} from "@/components/ui/card";
 
+// Route setup with taskId as search param
 export const Route = createFileRoute("/groups/$groupId/task-editor")({
-  component: CardWithForm,
+  component: TaskEditor,
+  validateSearch: (search) => {
+    return {
+      taskId: typeof search.taskId === "string" ? search.taskId : undefined,
+    };
+  },
 });
 
-export function CardWithForm() {
+function TaskEditor() {
   const { groupId } = useParams({ strict: false });
-  const [name, setName] = useState("");
-  const [dueDate, setDueDate] = useState("");
-  const [details, setDetails] = useState("");
-  const [status, setStatus] = useState("Pending");
+  const { taskId } = Route.useSearch();
+
+  const [form, setForm] = useState({
+    taskName: "",
+    dueDate: "",
+    detail: "",
+    status: "Pending",
+  });
+
+  // Fetch task data if editing
+  useEffect(() => {
+    if (!taskId) return;
+
+    const fetchTask = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:5000/api/tasks/${taskId}`);
+        const data = await response.json();
+        if (data.success && data.task) {
+          setForm({
+            taskName: data.task.name,
+            dueDate: data.task.due_date,
+            detail: data.task.detail,
+            status: data.task.status,
+          });
+        } else {
+          console.error("Failed to load task.");
+        }
+      } catch (err) {
+        console.error("Error fetching task:", err);
+      }
+    };
+
+    fetchTask();
+  }, [taskId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const response = await fetch(
-        `http://localhost:5000/api/groups/${groupId}/tasks`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name,
-            due_date: dueDate,
-            detail: details,
-            status,
-          }),
-        }
-      );
 
-      const result = await response.json();
-      if (result.success) {
-        alert("Task created!");
+    const url = taskId
+      ? `http://127.0.0.1:5000/api/tasks/${taskId}`
+      : `http://127.0.0.1:5000/api/groups/${groupId}/tasks`;
+
+    const method = taskId ? "PUT" : "POST";
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.taskName,
+          due_date: form.dueDate,
+          detail: form.detail,
+          status: form.status,
+        }),
+      });
+
+      if (response.ok) {
+        alert(taskId ? "Task updated!" : "Task created!");
+        setForm({ taskName: "", dueDate: "", detail: "", status: "Pending" });
       } else {
-        alert("Failed to create task");
+        console.error("Failed to save task");
       }
-    } catch (error) {
-      console.error("Error submitting task:", error);
+    } catch (err) {
+      console.error("Error submitting task:", err);
     }
   };
 
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Create Task</CardTitle>
-        <CardDescription>Add a new task for this group.</CardDescription>
+        <CardTitle>{taskId ? "Edit Task" : "Create Task"}</CardTitle>
+        <CardDescription>
+          {taskId
+            ? "Update the task details below."
+            : "Add a new task for this group."}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit}>
@@ -72,8 +109,8 @@ export function CardWithForm() {
               <Label htmlFor="name">Task Name</Label>
               <Input
                 id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={form.taskName}
+                onChange={(e) => setForm({ ...form, taskName: e.target.value })}
               />
             </div>
             <div className="flex flex-col space-y-1.5">
@@ -81,8 +118,8 @@ export function CardWithForm() {
               <Input
                 id="due-date"
                 type="date"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
+                value={form.dueDate}
+                onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
               />
             </div>
             <div className="flex flex-col space-y-1.5">
@@ -91,13 +128,16 @@ export function CardWithForm() {
                 id="task-detail"
                 className="w-full h-32 px-4 py-2 resize-y"
                 wrap="soft"
-                value={details}
-                onChange={(e) => setDetails(e.target.value)}
+                value={form.detail}
+                onChange={(e) => setForm({ ...form, detail: e.target.value })}
               />
             </div>
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="status">Status</Label>
-              <Select value={status} onValueChange={setStatus}>
+              <Select
+                value={form.status}
+                onValueChange={(value) => setForm({ ...form, status: value })}
+              >
                 <SelectTrigger id="status">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
@@ -111,7 +151,18 @@ export function CardWithForm() {
             </div>
           </div>
           <CardFooter className="flex justify-between pt-4">
-            <Button type="button" variant="outline">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() =>
+                setForm({
+                  taskName: "",
+                  dueDate: "",
+                  detail: "",
+                  status: "Pending",
+                })
+              }
+            >
               Cancel
             </Button>
             <Button type="submit">Save</Button>

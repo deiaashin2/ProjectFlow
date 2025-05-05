@@ -177,6 +177,7 @@ export type Task = {
   dueDate: string; // Update to string (for date as "YYYY-MM-DD" format)
   status: "Pending" | "Done" | "Late" | "Canceled"; // Status of the payment
   taskName: string; // Name of the task
+  detail?: string;
 };
 
 export const columns: ColumnDef<Task>[] = [
@@ -266,16 +267,34 @@ export const columns: ColumnDef<Task>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link
-                to="/groups/$groupId/task-editor"
-                params={{ groupId: "1" }}
-                className="[&.active]:font-bold"
-              >
-                Edit Task
-              </Link>
+            <Link
+              to="/groups/$groupId/task-editor"
+              params={{ groupId: "1" }}
+              search={{ taskId: payment.id }}
+              className="[&.active]:font-bold"
+            >
+              Edit Task
+            </Link>
             </DropdownMenuItem>
-              <SheetDemo/>
-            <DropdownMenuItem>Delete</DropdownMenuItem>
+            <SheetDemo task={payment} />
+              <DropdownMenuItem
+                onClick={async () => {
+                  try {
+                    const res = await fetch(`http://127.0.0.1:5000/api/tasks/${payment.id}`, {
+                      method: "DELETE",
+                    });
+                    if (res.ok) {
+                      window.location.reload(); // or call fetchTasks() again
+                    } else {
+                      console.error("Failed to delete task");
+                    }
+                  } catch (err) {
+                    console.error("Error deleting task:", err);
+                  }
+                }}
+              >
+                Delete
+              </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -303,6 +322,7 @@ export function DataTableDemo() {
           taskName: task.name,
           dueDate: task.due_date,
           status: task.status,
+          detail: task.detail,
         }));
         setData(formatted);
       } catch (error) {
@@ -576,40 +596,47 @@ export function CardWithForm() {
   );
 }
 
-export function SheetDemo() {
+export function SheetDemo({ task }: { task: Task }) {
+  const [fullTask, setFullTask] = useState<Task | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetch(`http://127.0.0.1:5000/api/tasks/${task.id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) setFullTask(data.task);
+        });
+    }
+  }, [isOpen, task.id]);
+
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-      <DropdownMenuItem onClick={() => setIsOpen(true)}>Task details</DropdownMenuItem>
+        <DropdownMenuItem>Task details</DropdownMenuItem>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Edit profile</SheetTitle>
+          <SheetTitle>{fullTask?.taskName || task.taskName}</SheetTitle>
           <SheetDescription>
-            Make changes to your profile here. Click save when you're done.
+            {fullTask?.detail?.trim()
+              ? fullTask.detail
+              : "No details provided."}
           </SheetDescription>
         </SheetHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input id="name" value="Pedro Duarte" className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input id="username" value="@peduarte" className="col-span-3" />
+          <div className="text-muted-foreground">
+            Due: {fullTask?.dueDate || task.dueDate}
+            <br />
+            Status: {fullTask?.status || task.status}
           </div>
         </div>
         <SheetFooter>
           <SheetClose asChild>
-            <Button type="submit" onClick={() => setIsOpen(false)}>Save changes</Button> 
+            <Button type="button">Close</Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>
     </Sheet>
-  )
+  );
 }

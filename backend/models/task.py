@@ -45,3 +45,12 @@ class Task:
         conn.execute("DELETE FROM tasks WHERE id=?", (task_id,))
         conn.commit()
         conn.close()
+
+    @classmethod
+    def get_by_id(cls, task_id):
+        conn = get_db_connection()
+        task = conn.execute(
+            "SELECT * FROM tasks WHERE id=?", (task_id,)
+        ).fetchone()
+        conn.close()
+        return dict(task) if task else None  

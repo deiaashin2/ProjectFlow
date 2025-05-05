@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "@tanstack/react-router";
+import { createFileRoute, useParams } from "@tanstack/react-router";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -20,26 +20,33 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 
+export const Route = createFileRoute("/groups/$groupId/task-editor")({
+  component: CardWithForm,
+});
+
 export function CardWithForm() {
   const { groupId } = useParams({ strict: false });
   const [name, setName] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const [detail, setDetail] = useState("");
+  const [details, setDetails] = useState("");
   const [status, setStatus] = useState("Pending");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:5000/api/groups/${groupId}/tasks`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          due_date: dueDate,
-          detail,
-          status,
-        }),
-      });
+      const response = await fetch(
+        `http://localhost:5000/api/groups/${groupId}/tasks`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            due_date: dueDate,
+            detail: details,
+            status,
+          }),
+        }
+      );
 
       const result = await response.json();
       if (result.success) {
@@ -63,7 +70,11 @@ export function CardWithForm() {
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="name">Task Name</Label>
-              <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </div>
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="due-date">Due date</Label>
@@ -80,8 +91,8 @@ export function CardWithForm() {
                 id="task-detail"
                 className="w-full h-32 px-4 py-2 resize-y"
                 wrap="soft"
-                value={detail}
-                onChange={(e) => setDetail(e.target.value)}
+                value={details}
+                onChange={(e) => setDetails(e.target.value)}
               />
             </div>
             <div className="flex flex-col space-y-1.5">

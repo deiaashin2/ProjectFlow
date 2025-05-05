@@ -7,7 +7,6 @@ import {
   BellRing,
   Calendar,
   ChevronDown,
-  Circle,
   ListCheck,
   Mail,
 } from "lucide-react";
@@ -41,10 +40,12 @@ type Announcement = {
 };
 type Task = {
   id: string;
-  title: string;
+  name: string;
   details: string | null;
-  created_by: string;
-  created_at: string;
+  group_id: number;
+  due_date: string | null;
+  status_id: number;
+  user_id: string;
 };
 
 function InformationHub() {
@@ -61,7 +62,7 @@ function InformationHub() {
       const announcements = await response.json();
       setAnnouncements(announcements);
     } catch (error) {
-      console.error("Failed to fetch tasks:", error);
+      console.error("Failed to fetch announcements:", error);
     }
   }
 
@@ -71,23 +72,23 @@ function InformationHub() {
     }
   }, []);
 
-  const [tasks, setTasks] = useState<Announcement[]>();
+  const [tasks, setTasks] = useState<Task[]>();
 
   async function fetchTasks(groupId: number) {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/announcements/" + groupId
+        "http://localhost:5000/api/groups/" + groupId + "/tasks"
       );
-      const announcements = await response.json();
-      setAnnouncements(announcements);
+      const tasks = await response.json();
+      setTasks(tasks);
     } catch (error) {
       console.error("Failed to fetch tasks:", error);
     }
   }
 
   useEffect(() => {
-    if (!announcements) {
-      fetchAnnouncements(Number(params.groupId));
+    if (!tasks) {
+      fetchTasks(Number(params.groupId));
     }
   }, []);
 
@@ -139,20 +140,17 @@ function InformationHub() {
                     Time to get started...
                   </h3>
                 </section>
-                <ul>
-                  <li className="flex items-center">
-                    <Circle size={16} className="me-2" />
-                    Work on ProjectFlow
-                  </li>
-                  <li className="flex items-center">
-                    <Circle size={16} className="me-2" />
-                    Study for midterm
-                  </li>
-                  <li className="flex items-center">
-                    <Circle size={16} className="me-2" />
-                    Try not to crash out
-                  </li>
-                </ul>
+                <div className="flex justify-center items-center">
+                  {tasks && tasks.length > 0 ? (
+                    <ul className="w-[100%] h-[100%] overflow-hidden">
+                      {tasks.map((task) => {
+                        return <li key={task.id}>- {task.name}</li>;
+                      })}
+                    </ul>
+                  ) : (
+                    <p className="text-muted-foreground">No new tasks.</p>
+                  )}
+                </div>
               </div>
               <div className="flex flex-col border-b border-solid border-muted2 p-10 lg:w-3/5 lg:border-b-0 lg:border-r">
                 <section className="flex items-end justify-between border-b pb-1 mb-1">

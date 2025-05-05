@@ -1,5 +1,4 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { API_BASE_URL } from "@/lib/constants";
 
 export type User = {
   username: string;
@@ -14,7 +13,7 @@ export type User = {
 };
 
 async function getUsers(): Promise<User[]> {
-  const response = await fetch(`${API_BASE_URL}/users`);
+  const response = await fetch("https://67c79ebcc19eb8753e7a2f85.mockapi.io/api/v1/users");
 
   if (!response.ok) {
     throw new Error("Error fetching users");

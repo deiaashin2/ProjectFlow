@@ -86,13 +86,22 @@ def update_group(group_id):
 @group_bp.route("/<int:group_id>/invite/", methods=["POST"])
 def invite_member(group_id):
     data = request.get_json()
-    user_id = data.get("user_id")  # Explicity pass the user id through post body
+    email = data.get("email")  # Explicity pass the user id through post body
 
-    if not user_id:
+    if not email:
         return jsonify({"message": "Invalid user"}), 400
 
     try:
-        result = Group.invite(user_id, group_id)
+        result = Group.invite(email, group_id)
         return jsonify(result), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"message": str(e)}), 400
+
+
+@group_bp.route("/<int:group_id>/members/", methods=["GET"])
+def get_members(group_id):
+    try:
+        members = Group.get_members(group_id)
+        return jsonify(members), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500

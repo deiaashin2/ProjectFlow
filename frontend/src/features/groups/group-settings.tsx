@@ -31,6 +31,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Group } from "@/hooks/groups/useGroups";
 import DeleteGroupDialog from "@/features/groups/delete-group";
 import UpdateGroupMenu from "@/features/groups/update-group";
+import InviteMemberMenu from "@/features/groups/invite-member";
 
 type Props = {
   group: Group;
@@ -116,6 +117,10 @@ function GroupSettingsDialog({ group }: Props) {
             <ScrollArea className="overflow-y-auto">
               {activeItem === "General" && (
                 <UpdateGroupMenu group={group} setOpen={setOpen} />
+              )}
+
+              {activeItem === "Invite" && (
+                <InviteMemberMenu group={group} setOpen={setOpen} />
               )}
             </ScrollArea>
           </main>

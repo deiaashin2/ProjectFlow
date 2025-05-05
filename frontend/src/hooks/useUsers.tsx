@@ -4,6 +4,8 @@ import { API_BASE_URL } from "@/lib/constants";
 export type User = {
   username: string;
   email: string;
+  name: string;
+  id: string;
   password: string;
   avatar: string;
   online: boolean;

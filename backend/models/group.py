@@ -119,12 +119,21 @@ class Group:
         return {"message": "Updated group"}
 
     @classmethod
-    def invite(cls, user_id, group_id):
+    def invite(cls, email, group_id):
         conn = get_db_connection()
         cursor = conn.cursor()
 
+        result = cursor.execute(
+            "SELECT id FROM users WHERE email = ?", (email,)
+        ).fetchone()
+
+        if not result:
+            raise Exception("User not found")
+
+        user_id = result[0]
+
         is_member = cursor.execute(
-            "SELECT * from group_members WHERE user_id = ? AND group_id = ?",
+            "SELECT 1 from group_members WHERE user_id = ? AND group_id = ?",
             (user_id, group_id),
         ).fetchone()
 
@@ -141,3 +150,31 @@ class Group:
         conn.close()
 
         return {"message": "User added to group"}
+
+    @classmethod
+    def get_members(cls, group_id):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        users = cursor.execute(
+            """
+        SELECT users.id, users.name, users.email
+        FROM group_members
+        JOIN users ON group_members.user_id = users.id
+        WHERE group_members.group_id = ?
+        LIMIT 8
+        """,
+            (group_id,),
+        ).fetchall()
+
+        result = []
+        for user in users:
+            user_data = {
+                "id": user["id"],
+                "name": user["name"],
+                "email": user["email"],
+            }
+            result.append(user_data)
+
+        conn.close()
+
+        return result

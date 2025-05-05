@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, useParams } from "@tanstack/react-router";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { createFileRoute, useParams, useNavigate } from "@tanstack/react-router";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -26,6 +33,7 @@ export const Route = createFileRoute("/groups/$groupId/task-editor")({
 function TaskEditor() {
   const { groupId } = useParams({ strict: false });
   const { taskId } = Route.useSearch();
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     taskName: "",
@@ -34,26 +42,36 @@ function TaskEditor() {
     status: "Pending",
   });
 
-  // Fetch task data if editing
+  const [loading, setLoading] = useState(false);
+
+  // ✅ Fetch task data if editing
   useEffect(() => {
     if (!taskId) return;
 
     const fetchTask = async () => {
       try {
+        setLoading(true);
         const response = await fetch(`http://127.0.0.1:5000/api/tasks/${taskId}`);
         const data = await response.json();
-        if (data.success && data.task) {
+        console.log("Fetched task data:", data); // ✅ Debug output
+
+        // 🧠 Handle both possible formats: { task: {...} } OR just {...}
+        const task = data.task ?? data;
+
+        if (task.name && task.due_date) {
           setForm({
-            taskName: data.task.name,
-            dueDate: data.task.due_date,
-            detail: data.task.detail,
-            status: data.task.status,
+            taskName: task.name,
+            dueDate: task.due_date,
+            detail: task.detail || "",
+            status: task.status || "Pending",
           });
         } else {
-          console.error("Failed to load task.");
+          console.error("Invalid task format:", task);
         }
       } catch (err) {
         console.error("Error fetching task:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -82,8 +100,12 @@ function TaskEditor() {
       });
 
       if (response.ok) {
-        alert(taskId ? "Task updated!" : "Task created!");
-        setForm({ taskName: "", dueDate: "", detail: "", status: "Pending" });
+        if (!groupId) {
+          console.error("Missing groupId");
+          return;
+        }
+
+        navigate({ to: "/groups/$groupId/task-management", params: { groupId } });
       } else {
         console.error("Failed to save task");
       }
@@ -91,6 +113,11 @@ function TaskEditor() {
       console.error("Error submitting task:", err);
     }
   };
+
+  // 👀 Show loading state
+  if (taskId && loading) {
+    return <div className="p-4 text-center">Loading task...</div>;
+  }
 
   return (
     <Card className="w-full">
@@ -139,7 +166,7 @@ function TaskEditor() {
                 onValueChange={(value) => setForm({ ...form, status: value })}
               >
                 <SelectTrigger id="status">
-                  <SelectValue placeholder="Select" />
+                  <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Pending">Pending</SelectItem>
@@ -154,17 +181,16 @@ function TaskEditor() {
             <Button
               type="button"
               variant="outline"
-              onClick={() =>
-                setForm({
-                  taskName: "",
-                  dueDate: "",
-                  detail: "",
-                  status: "Pending",
-                })
-              }
+              onClick={() => {
+                if (!groupId) {
+                  console.error("Missing groupId");
+                  return;
+                }
+                navigate({ to: "/groups/$groupId/task-management", params: { groupId } });
+              }}
             >
               Cancel
-            </Button>
+          </Button>
             <Button type="submit">Save</Button>
           </CardFooter>
         </form>

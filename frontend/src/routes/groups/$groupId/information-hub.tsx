@@ -5,10 +5,10 @@ import { Separator } from "@/components/ui/separator";
 import {
   ArrowRight,
   BellRing,
-  Calendar,
-  ChevronDown,
+  // Calendar,
+  // ChevronDown,
   ListCheck,
-  Mail,
+  // Mail,
 } from "lucide-react";
 import IconTooltip from "@/components/icon-tooltip";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
@@ -115,7 +115,7 @@ function InformationHub() {
   }
 
   return (
-    <section className="py-32 flex justify-center">
+    <section className="py-32 flex justify-center items-center h-full">
       <section className="container">
         <header className="mb-24 flex flex-col items-center gap-6">
           <h1 className="text-center text-3xl font-semibold lg:max-w-3xl lg:text-5xl">
@@ -125,12 +125,18 @@ function InformationHub() {
             {currentGroup?.description}
           </p>
         </header>
-        <section className="relative flex justify-center">
+        <section // Information
+          className="relative flex justify-center"
+        >
           <div className="relative flex w-full flex-col border border-muted2 md:w-1/2 lg:w-full">
-            <section className="relative flex flex-col lg:flex-row">
-              <div className="flex flex-col border-b border-solid border-muted2 p-10 lg:w-3/5 lg:border-b-0 lg:border-r">
+            <section // Tasks and Announcements
+              className="relative flex flex-col lg:flex-row"
+            >
+              <div // Tasks
+                className="flex flex-col border-b border-solid border-muted2 p-10 lg:w-3/5 lg:border-b-0 lg:border-r"
+              >
                 <section className="flex items-end justify-between border-b pb-1 mb-1">
-                  <div className="flex items-center">
+                  <div className="flex items-center hover:text-muted-foreground">
                     <ListCheck className="mr-1" />
                     <Link className="text-xl font-semibold" to={tasksLink}>
                       Tasks
@@ -142,9 +148,21 @@ function InformationHub() {
                 </section>
                 <div className="flex justify-center items-center">
                   {tasks && tasks.length > 0 ? (
-                    <ul className="w-[100%] h-[100%] overflow-hidden">
+                    <ul className="w-[100%] overflow-hidden">
                       {tasks.map((task) => {
-                        return <li key={task.id}>- {task.name}</li>;
+                        return (
+                          <>
+                            <li
+                              className="flex justify-between overflow-hidden max-h-[1.5rem]"
+                              key={task.id}
+                            >
+                              <span>- {task.name}</span>
+                              <span>
+                                {task.status_id ? task.status_id : ""}
+                              </span>
+                            </li>
+                          </>
+                        );
                       })}
                     </ul>
                   ) : (
@@ -152,7 +170,9 @@ function InformationHub() {
                   )}
                 </div>
               </div>
-              <div className="flex flex-col border-b border-solid border-muted2 p-10 lg:w-3/5 lg:border-b-0 lg:border-r">
+              <div // Announcements
+                className="flex flex-col border-b border-solid border-muted2 p-10 lg:w-3/5 lg:border-b-0 lg:border-r"
+              >
                 <section className="flex items-end justify-between border-b pb-1 mb-1">
                   <div className="flex items-center">
                     <BellRing className="mr-1" />
@@ -163,12 +183,18 @@ function InformationHub() {
                   </h3>
                 </section>
                 <div className="flex grow justify-center items-center">
-                  {announcements ? (
+                  {announcements && announcements.length > 0 ? (
                     <ul className="w-[100%] h-[100%] overflow-hidden">
                       {announcements.map((announcement) => {
                         return (
-                          <li key={announcement.id}>
-                            {announcement.title} -{announcement.created_by}
+                          <li
+                            key={announcement.id}
+                            className="flex overflow-hidden max-h-[1.5rem] gap-[1rem]"
+                          >
+                            <span>- {announcement.title}</span>
+                            <span className="text-muted-foreground">
+                              {announcement.created_by}
+                            </span>
                           </li>
                         );
                       })}
@@ -181,7 +207,7 @@ function InformationHub() {
                 </div>
               </div>
             </section>
-            <section className="relative flex flex-col border-t border-solid border-muted2 lg:flex-row">
+            {/* <section className="relative flex flex-col border-t border-solid border-muted2 lg:flex-row">
               <div className="flex flex-col border-b border-solid border-muted2 p-10 lg:w-3/5 lg:border-b-0 lg:border-r">
                 <section className="flex items-end justify-between border-b pb-1 mb-1">
                   <div className="flex items-center">
@@ -216,7 +242,7 @@ function InformationHub() {
                   <ChevronDown />
                 </div>
               </div>
-            </section>
+            </section> */}
           </div>
         </section>
       </section>

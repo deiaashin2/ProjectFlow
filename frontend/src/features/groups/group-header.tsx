@@ -3,12 +3,15 @@ import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/theme-toggle";
+import useSignout from "@/hooks/useSignout";
 
 function GroupHeader() {
   const { query } = useSearch({ from: "/groups/" });
   const navigate = useNavigate({ from: "/groups" });
   const [searchParam, setSearchParam] = useState(query || "");
+  const signoutMutation = useSignout();
 
   // Debouncing search input
   useEffect(() => {
@@ -28,6 +31,16 @@ function GroupHeader() {
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setSearchParam(e.target.value);
   }
+
+  function handleSignout(e: any) {
+    e.preventDefault();
+
+    signoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        navigate({ to: "/log-in" });
+      },
+    });
+  }
   return (
     <header className="sticky top-0 z-10 items-center bg-background">
       <div className="max-w-7xl mx-auto w-full flex items-center justify-between p-4 ">
@@ -43,10 +56,15 @@ function GroupHeader() {
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Avatar>
-            <AvatarImage src="https://i.pinimg.com/736x/0f/0c/b4/0f0cb42c40ba352a1489456e5de875a6.jpg" />
-            <AvatarFallback>PF</AvatarFallback>
-          </Avatar>
+          <div className="pr-3">
+            <Avatar>
+              <AvatarImage src="https://i.pinimg.com/736x/0f/0c/b4/0f0cb42c40ba352a1489456e5de875a6.jpg" />
+              <AvatarFallback>PF</AvatarFallback>
+            </Avatar>
+          </div>
+          <Button onClick={handleSignout} className="hover:cursor-pointer">
+            {signoutMutation.isPending ? "Signing out..." : "Sign Out"}
+          </Button>
         </div>
       </div>
     </header>

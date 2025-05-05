@@ -254,7 +254,6 @@ function InformationHubBreadcrumb() {
   const params = useParams({ from: "/groups/$groupId/information-hub" });
 
   const navItems = [
-    { title: "Home", url: "/" },
     { title: "Groups", url: "/groups" },
     {
       title: "Information Hub",

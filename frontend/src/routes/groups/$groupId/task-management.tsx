@@ -142,7 +142,6 @@ function MessagePage() {
 
 function MessageBreadcrumb() {
   const navItems = [
-    { title: "Home", url: "/" },
     { title: "Groups", url: "/groups" },
     { title: "Task Management", url: "/groups/1/task-management" },
   ];

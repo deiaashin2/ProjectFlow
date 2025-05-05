@@ -114,7 +114,6 @@ function MessagePage() {
 
 function MessageBreadcrumb() {
   const navItems = [
-    { title: "Home", url: "/" },
     { title: "Groups", url: "/groups" },
     { title: "Messages", url: "/groups/1/messages" },
   ];

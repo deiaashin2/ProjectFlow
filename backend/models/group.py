@@ -31,7 +31,7 @@ class Group:
     def get_by_id(cls, user_id, group_id):
         conn = get_db_connection()
         group = conn.execute(
-            """SELECT groups.*
+            """SELECT group.id, group.name, group.description, group.created_by_id
           FROM group_members
           JOIN groups ON group_members.group_id = groups.id
           WHERE group_members.user_id = ? AND group_members.group_id = ?""",
@@ -46,15 +46,22 @@ class Group:
         return dict(group)
 
     @classmethod
-    def get_all(cls, user_id):
+    def get_all(cls, user_id, query):
         conn = get_db_connection()
-        groups = conn.execute(
-            """SELECT groups.*
-        FROM group_members
-        JOIN groups ON group_members.group_id = groups.id
-        WHERE group_members.user_id = ?""",
-            (user_id,),
-        ).fetchall()
+
+        stmt = """SELECT groups.*
+          FROM group_members
+          JOIN groups ON group_members.group_id = groups.id
+          WHERE group_members.user_id = ?
+        """
+
+        params = [user_id]
+
+        if query:
+            stmt += " AND groups.name LIKE ?"
+            params.append(f"%{query}%")
+
+        groups = conn.execute(stmt, params).fetchall()
 
         conn.close()
         result = []

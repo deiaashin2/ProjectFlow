@@ -12,8 +12,10 @@ def get_all_groups():
     if not user_id:
         return jsonify({"message": "Invalid user"}), 401
 
+    query = request.args.get("name")
+
     try:
-        groups = Group.get_all(user_id)
+        groups = Group.get_all(user_id, query)
         return jsonify(groups), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500

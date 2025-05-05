@@ -55,13 +55,13 @@ function GroupHeader() {
           />
         </div>
         <div className="flex items-center gap-2">
-          <ThemeToggle />
-          <div className="pr-3">
-            <Avatar>
-              <AvatarImage src="https://i.pinimg.com/736x/0f/0c/b4/0f0cb42c40ba352a1489456e5de875a6.jpg" />
-              <AvatarFallback>PF</AvatarFallback>
-            </Avatar>
-          </div>
+          <ThemeToggle/>
+            {/* <div className="pr-3">
+              <Avatar>
+                <AvatarImage src="https://i.pinimg.com/736x/0f/0c/b4/0f0cb42c40ba352a1489456e5de875a6.jpg" />
+                <AvatarFallback>PF</AvatarFallback>
+              </Avatar>
+            </div> */}
           <Button onClick={handleSignout} className="hover:cursor-pointer">
             {signoutMutation.isPending ? "Signing out..." : "Sign Out"}
           </Button>

@@ -18,7 +18,7 @@ flask run --host=localhost
 In your second terminal window:
 
 cd frontend
-npm install    # Only needed the first time
+npm install ---> Only needed the first time
 npm run dev
 
 **You're now ready to explore ProjectFlow! Sign up, create a group, manage tasks, and start collaborating.**

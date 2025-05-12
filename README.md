@@ -13,9 +13,9 @@ In your first terminal window:
 cd backend
 flask run --host=localhost
 
-## 2. Start the Frontend (React + Vite)
+### 2. Start the Frontend (React + Vite)
 
-In your first terminal window:
+In your second terminal window:
 
 cd frontend
 npm install    # Only needed the first time

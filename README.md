@@ -11,6 +11,7 @@ Follow the steps below to run the project locally:
 In your first terminal window:
 
 cd backend
+
 flask run --host=localhost
 
 ### 2. Start the Frontend (React + Vite)
@@ -18,7 +19,9 @@ flask run --host=localhost
 In your second terminal window:
 
 cd frontend
+
 npm install ---> Only needed the first time
+
 npm run dev
 
 **You're now ready to explore ProjectFlow! Sign up, create a group, manage tasks, and start collaborating.**

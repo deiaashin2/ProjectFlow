@@ -10,15 +10,13 @@ Follow the steps below to run the project locally:
 
 In your first terminal window:
 
-```bash
 cd backend
 flask run --host=localhost
 
-### 2. Start the Frontend (React + Vite)
+## 2. Start the Frontend (React + Vite)
 
 In your first terminal window:
 
-```bash
 cd frontend
 npm install    # Only needed the first time
 npm run dev
